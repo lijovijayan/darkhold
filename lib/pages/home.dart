@@ -1,16 +1,48 @@
-import 'package:darkhold/models/models.dart';
-import 'package:darkhold/sqlite.config.dart';
-import 'package:darkhold/utils/common.utils.dart';
-import 'package:darkhold/widgets/widgets.dart';
+import '../services/services.dart';
+import '../utils/common.utils.dart';
+import '../widgets/widgets.dart';
+import '../models/models.dart';
+import './pages.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-import 'pages.dart';
-
 class HomePage extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final String username = 'Lijo Vijayan';
+  void _onClickAddButton(context) async {
+            // await CategoreyTable.insert(Categorey(
+            //     color: 'red',
+            //     completedTasks: 0,
+            //     id: null,
+            //     name: 'Categorey Test',
+            //     totalTasks: 100));
+            // await TaskTable.insert(Task(
+            //   categoreyId: 2,
+            //   color: 'red',
+            //   id: null,
+            //   completed: true,
+            //   date: '12-05-1000',
+            //   time: '12:05',
+            //   name: 'Test Task'
+            // ));
+            // final cat = await CategoreyTable.getCategoreyById(1);
+            // final cats = await CategoreyTable.getAllCategories();
+            // final task = await TaskTable.getTasksByCategoreyId(1);
+            // print(cat);
+            // print(cats);
+            // print(task);
+            showModalBottomSheet<void>(
+              context: context,
+              isScrollControlled: true,
+              isDismissible: true,
+              enableDrag: false,
+              backgroundColor: Colors.transparent,
+              builder: (BuildContext context) {
+                return AddTaskPage();
+              },
+            );
+            }
   Widget _renderContent(BuildContext _context) {
     return SingleChildScrollView(
       physics: BouncingScrollPhysics(),
@@ -105,59 +137,10 @@ class HomePage extends StatelessWidget {
         body: _renderContent(context),
         floatingActionButton: FloatingActionButton(
           child: Icon(CupertinoIcons.plus),
-          onPressed: () async {
-            showModalBottomSheet<void>(
-              context: context,
-              isScrollControlled: true,
-              isDismissible: true,
-              enableDrag: false,
-              backgroundColor: Colors.transparent,
-              builder: (BuildContext context) {
-                return BottomSheetContainer();
-              },
-            );
-          },
+          onPressed: () => _onClickAddButton(context),
         ),
       ),
     );
   }
 }
 
-class BottomSheetContainer extends StatefulWidget {
-  @override
-  _BottomSheetContainerState createState() => _BottomSheetContainerState();
-}
-
-class _BottomSheetContainerState extends State<BottomSheetContainer> {
-  bool expanded = false;
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedContainer(
-      duration: Duration(milliseconds: 150),
-      height: expanded ? MediaQuery.of(context).size.height : 200,
-      color: Colors.amber,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          InkWell(
-            child: Container(
-              color: Colors.white,
-              height: 20,
-            ),
-            onTap: () {
-              setState(() {
-                expanded = !expanded;
-              });
-            },
-          ),
-          const Text('Modal BottomSheet'),
-          ElevatedButton(
-            child: const Text('Close BottomSheet'),
-            onPressed: () => Navigator.pop(context),
-          ),
-        ],
-      ),
-    );
-  }
-}

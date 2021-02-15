@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 class Categorey {
   final int id;
   final String name;
@@ -5,10 +7,10 @@ class Categorey {
   final int completedTasks;
   final String color;
   Categorey({
-    this.id,
-    this.name,
-    this.totalTasks,
-    this.completedTasks,
-    this.color,
+    @required this.id,
+    @required this.name,
+    @required this.totalTasks,
+    @required this.completedTasks,
+    @required this.color,
   });
 }
