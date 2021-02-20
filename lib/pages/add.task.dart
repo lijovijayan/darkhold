@@ -1,7 +1,6 @@
 import 'package:darkhold/models/categorey.model.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class AddTaskPage extends StatefulWidget {
   @override
@@ -10,11 +9,23 @@ class AddTaskPage extends StatefulWidget {
 
 class _AddTaskPageState extends State<AddTaskPage> {
   bool expanded = false;
+  void onTapInput() {
+    if (!expanded) {
+      setState(() {
+        expanded = true;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
       duration: Duration(milliseconds: 150),
-      height: expanded ? MediaQuery.of(context).size.height : 250,
+      height: expanded
+          ? (MediaQuery.of(context).size.height -
+              (MediaQuery.of(context).padding.bottom +
+                  MediaQuery.of(context).padding.top))
+          : 250,
       color: Colors.white,
       child: Column(
         children: <Widget>[
@@ -90,7 +101,14 @@ class _AddTaskPageState extends State<AddTaskPage> {
                       label: "Categorey",
                       showClearButton: true,
                     ),
-                    TextFormField(),
+                    TextFormField(
+                      onTap: onTapInput,
+                      decoration: InputDecoration(hintText: 'Task'),
+                    ),
+                    TextFormField(
+                      onTap: onTapInput,
+                      decoration: InputDecoration(hintText: 'Name'),
+                    ),
                   ],
                 )),
           ),

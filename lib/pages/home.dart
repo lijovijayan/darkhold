@@ -1,7 +1,5 @@
-import '../services/services.dart';
 import '../utils/common.utils.dart';
 import '../widgets/widgets.dart';
-import '../models/models.dart';
 import './pages.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,38 +9,39 @@ class HomePage extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final String username = 'Lijo Vijayan';
   void _onClickAddButton(context) async {
-            // await CategoreyTable.insert(Categorey(
-            //     color: 'red',
-            //     completedTasks: 0,
-            //     id: null,
-            //     name: 'Categorey Test',
-            //     totalTasks: 100));
-            // await TaskTable.insert(Task(
-            //   categoreyId: 2,
-            //   color: 'red',
-            //   id: null,
-            //   completed: true,
-            //   date: '12-05-1000',
-            //   time: '12:05',
-            //   name: 'Test Task'
-            // ));
-            // final cat = await CategoreyTable.getCategoreyById(1);
-            // final cats = await CategoreyTable.getAllCategories();
-            // final task = await TaskTable.getTasksByCategoreyId(1);
-            // print(cat);
-            // print(cats);
-            // print(task);
-            showModalBottomSheet<void>(
-              context: context,
-              isScrollControlled: true,
-              isDismissible: true,
-              enableDrag: false,
-              backgroundColor: Colors.transparent,
-              builder: (BuildContext context) {
-                return AddTaskPage();
-              },
-            );
-            }
+    // await CategoreyTable.insert(Categorey(
+    //     color: 'red',
+    //     completedTasks: 0,
+    //     id: null,
+    //     name: 'Categorey Test',
+    //     totalTasks: 100));
+    // await TaskTable.insert(Task(
+    //   categoreyId: 2,
+    //   color: 'red',
+    //   id: null,
+    //   completed: true,
+    //   date: '12-05-1000',
+    //   time: '12:05',
+    //   name: 'Test Task'
+    // ));
+    // final cat = await CategoreyTable.getCategoreyById(1);
+    // final cats = await CategoreyTable.getAllCategories();
+    // final task = await TaskTable.getTasksByCategoreyId(1);
+    // print(cat);
+    // print(cats);
+    // print(task);
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      isDismissible: true,
+      enableDrag: false,
+      backgroundColor: Colors.transparent,
+      builder: (BuildContext context) {
+        return AddTaskPage();
+      },
+    );
+  }
+
   Widget _renderContent(BuildContext _context) {
     return SingleChildScrollView(
       physics: BouncingScrollPhysics(),
@@ -90,7 +89,7 @@ class HomePage extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: ListView.builder(
               physics: NeverScrollableScrollPhysics(),
-              itemCount: 100,
+              itemCount: 10,
               shrinkWrap: true,
               itemBuilder: (BuildContext _, int index) {
                 print(index);
@@ -143,4 +142,3 @@ class HomePage extends StatelessWidget {
     );
   }
 }
-
