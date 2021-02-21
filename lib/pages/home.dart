@@ -5,41 +5,46 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
+  AnimationController _animationController;
+
   final String username = 'Lijo Vijayan';
-  void _onClickAddButton(context) async {
-    // await CategoreyTable.insert(Categorey(
-    //     color: 'red',
-    //     completedTasks: 0,
-    //     id: null,
-    //     name: 'Categorey Test',
-    //     totalTasks: 100));
-    // await TaskTable.insert(Task(
-    //   categoreyId: 2,
-    //   color: 'red',
-    //   id: null,
-    //   completed: true,
-    //   date: '12-05-1000',
-    //   time: '12:05',
-    //   name: 'Test Task'
-    // ));
-    // final cat = await CategoreyTable.getCategoreyById(1);
-    // final cats = await CategoreyTable.getAllCategories();
-    // final task = await TaskTable.getTasksByCategoreyId(1);
-    // print(cat);
-    // print(cats);
-    // print(task);
-    showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      isDismissible: true,
-      enableDrag: false,
-      backgroundColor: Colors.transparent,
-      builder: (BuildContext context) {
-        return AddTaskPage();
-      },
+
+  @override
+  void initState() {
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
     );
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  void _onClickAddButton(context) async {
+    _animationController.forward().then((value) => {
+          showModalBottomSheet<void>(
+            context: context,
+            isScrollControlled: true,
+            isDismissible: true,
+            enableDrag: false,
+            builder: (BuildContext context) {
+              return AddTaskPage();
+            },
+          ).then((value) => {_animationController.reverse()})
+        });
+    ;
   }
 
   Widget _renderContent(BuildContext _context) {
@@ -50,16 +55,20 @@ class HomePage extends StatelessWidget {
         children: [
           Padding(
             padding: EdgeInsets.only(left: 20),
-            child: Text('Good morning, $username !'),
+            child: Text(
+              'Good morning,\n$username !',
+              style: Theme.of(_context).primaryTextTheme.headline4,
+            ),
           ),
           SizedBox(height: 20),
           Padding(
             padding: EdgeInsets.only(left: 20),
             child: Text(
               'CATEGORIES',
-              style: Theme.of(_context).accentTextTheme.subtitle1,
+              style: Theme.of(_context).primaryTextTheme.subtitle1,
             ),
           ),
+          SizedBox(height: 20),
           Container(
             padding: EdgeInsets.only(left: 20),
             height: 200,
@@ -82,7 +91,7 @@ class HomePage extends StatelessWidget {
             padding: EdgeInsets.only(left: 20),
             child: Text(
               'TODAY\'S TASK',
-              style: Theme.of(_context).accentTextTheme.subtitle1,
+              style: Theme.of(_context).primaryTextTheme.subtitle1,
             ),
           ),
           Padding(
@@ -113,21 +122,33 @@ class HomePage extends StatelessWidget {
         key: _scaffoldKey,
         appBar: AppBar(
           leading: IconButton(
-            icon: Icon(CupertinoIcons.bars),
-            splashRadius: 20,
+            icon: Icon(
+              CupertinoIcons.bars,
+              size: 28,
+            ),
+            splashRadius: 25,
             onPressed: () {
               _scaffoldKey.currentState.openDrawer();
             },
           ),
           actions: [
             IconButton(
-              icon: Icon(CupertinoIcons.search),
-              splashRadius: 20,
+              icon: Icon(
+                CupertinoIcons.search,
+                size: 25,
+              ),
+              splashRadius: 25,
               onPressed: () {},
             ),
+            SizedBox(
+              width: 5,
+            ),
             IconButton(
-              icon: Icon(CupertinoIcons.bell),
-              splashRadius: 20,
+              icon: Icon(
+                CupertinoIcons.bell,
+                size: 25,
+              ),
+              splashRadius: 25,
               onPressed: () {},
             ),
           ],
@@ -135,7 +156,10 @@ class HomePage extends StatelessWidget {
         drawer: AppDrawer(),
         body: _renderContent(context),
         floatingActionButton: FloatingActionButton(
-          child: Icon(CupertinoIcons.plus),
+          child: RotationTransition(
+            turns: Tween(begin: 0.0, end: 0.25).animate(_animationController),
+            child: Icon(CupertinoIcons.plus),
+          ),
           onPressed: () => _onClickAddButton(context),
         ),
       ),

@@ -23,7 +23,7 @@ class CategoreyCard extends StatelessWidget {
             children: [
               Text(
                 '$totalTaskCount TASKS',
-                style: Theme.of(context).primaryTextTheme.subtitle2,
+                style: Theme.of(context).textTheme.headline6,
               ),
               SizedBox(height: 10),
               Text(
