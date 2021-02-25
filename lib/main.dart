@@ -13,42 +13,41 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = ThemeData(
       fontFamily: "circular_std",
-      primaryColor: Color(0xFF246bfd),
+      primaryColor: ThemeColors.primary,
       accentColor: MaterialColor(0xFF7398ff, {}),
-      primaryColorDark: Color(0xFF0041c9),
-      hintColor: Color(0xFF575b6b),
+      hintColor: ThemeColors.text1,
       colorScheme: Theme.of(context).colorScheme.copyWith(
-            primaryVariant: Color(0xFF246bfd),
+            primaryVariant: ThemeColors.primary,
           ),
       appBarTheme: AppBarTheme(
         elevation: 0,
-        color: Colors.transparent,
+        color: ThemeColors.appbar,
       ),
       iconTheme: IconThemeData(
-        color: Colors.white,
+        color: ThemeColors.icon,
       ),
       primaryIconTheme: IconThemeData(
-        color: Colors.white,
+        color: ThemeColors.icon,
       ),
       accentIconTheme: IconThemeData(
-        color: Colors.white,
+        color: ThemeColors.icon,
       ),
-      unselectedWidgetColor: Color(0xFF246bfd),
+      unselectedWidgetColor: ThemeColors.primary,
       inputDecorationTheme: InputDecorationTheme(
         labelStyle: TextStyle().copyWith(
-          color: Color(0xFF58656c),
+          color: ThemeColors.inputHint,
         ),
         hintStyle: TextStyle().copyWith(
-          color: Color(0xFF58656c),
+          color: ThemeColors.inputHint,
         ),
         border: UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.white),
+          borderSide: BorderSide(color: ThemeColors.input),
         ),
         enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.white),
+          borderSide: BorderSide(color: ThemeColors.input),
         ),
       ),
-      canvasColor: Color(0xFF181a20),
+      canvasColor: ThemeColors.background,
       // text color - white
       textTheme: TextTheme(
         subtitle1: TextStyle(
@@ -62,8 +61,8 @@ class MyApp extends StatelessWidget {
           fontSize: 18,
         ),
       ).apply(
-        bodyColor: Colors.white,
-        displayColor: Colors.white,
+        bodyColor: ThemeColors.text,
+        displayColor: ThemeColors.text,
       ),
       // text color - Color(0xFF575b6b)
       primaryTextTheme: TextTheme(
@@ -78,8 +77,8 @@ class MyApp extends StatelessWidget {
           fontSize: 18,
         ),
       ).apply(
-        bodyColor: Color(0xFF575b6b),
-        displayColor: Color(0xFF575b6b),
+        bodyColor: ThemeColors.text1,
+        displayColor: ThemeColors.text1,
       ),
       // text color - Color(0xFFc25fff)
       accentTextTheme: TextTheme(
@@ -94,17 +93,18 @@ class MyApp extends StatelessWidget {
           fontSize: 18,
         ),
       ).apply(
-        bodyColor: Color(0xFFc25fff),
-        displayColor: Color(0xFFc25fff),
+        bodyColor: ThemeColors.text2,
+        displayColor: ThemeColors.text2,
       ),
       cardTheme: CardTheme(
-        color: Color(0xFF262a34),
+        color: ThemeColors.card,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0),
         ),
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
-          backgroundColor: Color(0xFF246bfd), foregroundColor: Colors.white),
+          backgroundColor: ThemeColors.primary,
+          foregroundColor: ThemeColors.input),
     );
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -115,4 +115,23 @@ class MyApp extends StatelessWidget {
       home: HomePage(),
     );
   }
+}
+
+class ThemeColors {
+  static Color primary = Color(0xFF246bfd);
+
+  static Color background = Color(0xFF181a20);
+
+  static Color card = Color(0xFF262a34);
+
+  static Color icon = Colors.white;
+
+  static Color appbar = Colors.transparent;
+
+  static Color input = Colors.white;
+  static Color inputHint = Color(0xFF58656c);
+
+  static Color text = Colors.white;
+  static Color text1 = Color(0xFF575b6b);
+  static Color text2 = Color(0xFFc25fff);
 }

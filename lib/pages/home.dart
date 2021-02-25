@@ -44,7 +44,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             },
           ).then((value) => {_animationController.reverse()})
         });
-    ;
   }
 
   Widget _renderContent(BuildContext _context) {
