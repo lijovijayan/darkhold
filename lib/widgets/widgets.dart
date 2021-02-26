@@ -1,3 +1,3 @@
-export './categorey.card.dart';
+export './category.card.dart';
 export './task.card.dart';
-export './add.categorey.popup.dart';
+export './add.category.popup.dart';
