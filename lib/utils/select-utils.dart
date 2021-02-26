@@ -2,7 +2,7 @@ import 'package:darkhold/models/models.dart';
 import 'package:flutter/material.dart';
 
 Widget dropdownBuilder(
-    BuildContext context, Categorey item, String itemDesignation) {
+    BuildContext context, MCategory item, String itemDesignation) {
   return Container(
     child: (item?.id == null)
         ? ListTile(
@@ -20,7 +20,7 @@ Widget dropdownBuilder(
 }
 
 Widget selectboxItemBuilder(
-    BuildContext context, Categorey item, bool isSelected) {
+    BuildContext context, MCategory item, bool isSelected) {
   return Container(
     // margin: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
     padding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),

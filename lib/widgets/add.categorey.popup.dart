@@ -6,11 +6,21 @@ class AddCategoreyPopup extends StatefulWidget {
 }
 
 class _AddCategoreyPopupState extends State<AddCategoreyPopup> {
-  bool _checked = false;
+  final _inputController = TextEditingController();
+  bool _checked = true;
+
   void _onCheck(bool checked) {
     setState(() {
       _checked = checked;
     });
+  }
+
+  void _onSubmit() {
+    final Map<String, dynamic> data = {
+      'categorey': _inputController.value,
+      'active': _checked,
+    };
+    Navigator.of(context).pop(data);
   }
 
   @override
@@ -33,6 +43,7 @@ class _AddCategoreyPopupState extends State<AddCategoreyPopup> {
             ),
             child: TextField(
               autofocus: true,
+              controller: _inputController,
               decoration: InputDecoration(labelText: 'Categorey'),
             ),
           ),
@@ -56,9 +67,7 @@ class _AddCategoreyPopupState extends State<AddCategoreyPopup> {
       ),
       actions: <Widget>[
         new FlatButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
+          onPressed: _onSubmit,
           textColor: Theme.of(context).primaryColor,
           child: const Text('ADD'),
         ),

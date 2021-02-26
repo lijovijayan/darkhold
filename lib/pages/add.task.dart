@@ -1,4 +1,4 @@
-import '../models/categorey.model.dart';
+import '../models/models.dart';
 import '../utils/select-utils.dart';
 import '../widgets/widgets.dart';
 import 'package:dropdown_search/dropdown_search.dart';
@@ -69,23 +69,32 @@ class _AddTaskPageState extends State<AddTaskPage>
       final hour = _getFormatedValue(_hour);
       final minute = _getFormatedValue(picked.minute);
       _timeController.value = TextEditingValue(text: '$hour:$minute: $period');
-      print(picked.period);
       setState(() {
         _selectedTime = picked;
       });
     }
   }
 
-  String _getFormatedValue(int value) {
-    return value < 10 ? '0$value' : '$value';
+  Future<void> _onAddCategorey(Map<String, dynamic> value) {
+    // final Map<String, dynamic> data = {
+    //   'categorey': _inputController.value,
+    //   'active': _checked,
+    // };
   }
 
-  _switchCategoreyAdd() {
+  void _switchCategoreyAdd() {
     _animationController.forward();
     showDialog(
       context: context,
       builder: (BuildContext context) => AddCategoreyPopup(),
-    ).then((value) => _animationController.reverse());
+    ).then((value) => {
+          _animationController.reverse(),
+          _onAddCategorey(value),
+        });
+  }
+
+  String _getFormatedValue(int value) {
+    return value < 10 ? '0$value' : '$value';
   }
 
   @override
@@ -132,51 +141,51 @@ class _AddTaskPageState extends State<AddTaskPage>
               ),
               Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
                 Expanded(
-                  child: DropdownSearch<Categorey>(
+                  child: DropdownSearch<MCategory>(
                     validator: (v) => v == null ? "required field" : null,
                     mode: Mode.MENU,
-                    compareFn: (Categorey i, Categorey s) {
+                    compareFn: (MCategory i, MCategory s) {
                       if (i != null && s != null) {
                         return i.id == s.id;
                       }
                       return false;
                     },
-                    onChanged: (Categorey data) {
+                    onChanged: (MCategory data) {
                       print(data.name);
                     },
                     popupItemBuilder: selectboxItemBuilder,
                     dropdownBuilder: dropdownBuilder,
                     showSelectedItem: true,
                     items: [
-                      Categorey(
+                      MCategory(
                         id: 0,
                         name: 'Catagorey 1',
                         color: 'red',
                         completedTasks: 0,
                         totalTasks: 0,
                       ),
-                      Categorey(
+                      MCategory(
                         id: 1,
                         name: 'Catagorey 2',
                         color: 'red',
                         completedTasks: 0,
                         totalTasks: 0,
                       ),
-                      Categorey(
+                      MCategory(
                         id: 2,
                         name: 'Catagorey 3',
                         color: 'red',
                         completedTasks: 0,
                         totalTasks: 0,
                       ),
-                      Categorey(
+                      MCategory(
                         id: 3,
                         name: 'Catagorey 4',
                         color: 'red',
                         completedTasks: 0,
                         totalTasks: 0,
                       ),
-                      Categorey(
+                      MCategory(
                         id: 4,
                         name: 'Catagorey 5',
                         color: 'red',

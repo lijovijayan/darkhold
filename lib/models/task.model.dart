@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-class Task {
+class MTask {
   final int id;
   final int categoreyId;
   final String categoreyName;
@@ -9,7 +9,7 @@ class Task {
   final String time;
   final bool completed;
   final String color;
-  Task({
+  MTask({
     @required this.id,
     @required this.categoreyId,
     @required this.categoreyName,

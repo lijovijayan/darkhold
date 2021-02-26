@@ -4,7 +4,7 @@ import '../../models/models.dart';
 import '../../sqlite.config.dart';
 
 class CategoreyTable {
-  static insert(Categorey categorey) async {
+  static insert(MCategory categorey) async {
     final Database db = await SQLiteConfig.database;
     try {
       TCategorey _categorey =
@@ -20,7 +20,7 @@ class CategoreyTable {
     }
   }
 
-  static Future<List<Categorey>> getAllCategories() async {
+  static Future<List<MCategory>> getAllCategories() async {
     final Database db = await SQLiteConfig.database;
     const String sql = '''SELECT
                         CATEGOREY.id,
@@ -36,7 +36,7 @@ class CategoreyTable {
     try {
       final List<Map<String, dynamic>> results = await db.rawQuery(sql);
       return List.generate(results.length, (i) {
-        return Categorey(
+        return MCategory(
           id: results[i]['id'],
           name: results[i]['name'],
           color: results[i]['color'],
@@ -60,7 +60,7 @@ class CategoreyTable {
     }
   }
 
-  static Future<List<Categorey>> getCategoreyById(int id) async {
+  static Future<List<MCategory>> getCategoreyById(int id) async {
     try {
       final Database db = await SQLiteConfig.database;
       final sql = '''SELECT CATEGOREY.id,
@@ -72,10 +72,9 @@ class CategoreyTable {
                       THEN 1 ELSE 0 END) as completedTasks
                     FROM CATEGOREY LEFT JOIN TASK 
                     WHERE CATEGOREY.id = $id''';
-      final List<Map<String, dynamic>> results =
-          await db.rawQuery(sql);
+      final List<Map<String, dynamic>> results = await db.rawQuery(sql);
       return List.generate(results.length, (i) {
-        return Categorey(
+        return MCategory(
           id: results[i]['id'],
           name: results[i]['name'],
           color: results[i]['color'],

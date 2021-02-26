@@ -4,7 +4,7 @@ import '../../models/models.dart';
 import '../../sqlite.config.dart';
 
 class TaskTable {
-  static insert(Task task) async {
+  static insert(MTask task) async {
     final Database db = await SQLiteConfig.database;
     try {
       TTask _task = TTask(
@@ -45,7 +45,7 @@ class TaskTable {
     }
   }
 
-  static Future<List<Task>> getTasksByCategoreyId(int categoreyId) async {
+  static Future<List<MTask>> getTasksByCategoreyId(int categoreyId) async {
     final Database db = await SQLiteConfig.database;
     final String sql = '''SELECT 
                           TASK.id,
@@ -63,7 +63,7 @@ class TaskTable {
     try {
       final List<Map<String, dynamic>> results = await db.rawQuery(sql);
       return List.generate(results.length, (i) {
-        return Task(
+        return MTask(
             id: results[i]['id'],
             name: results[i]['name'],
             date: results[i]['date'],
