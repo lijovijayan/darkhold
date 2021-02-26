@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class AddCategoreyPopup extends StatefulWidget {
+class AddCategoryPopup extends StatefulWidget {
   @override
-  _AddCategoreyPopupState createState() => _AddCategoreyPopupState();
+  _AddCategoryPopupState createState() => _AddCategoryPopupState();
 }
 
-class _AddCategoreyPopupState extends State<AddCategoreyPopup> {
+class _AddCategoryPopupState extends State<AddCategoryPopup> {
   final _inputController = TextEditingController();
   bool _checked = true;
 
@@ -17,7 +17,7 @@ class _AddCategoreyPopupState extends State<AddCategoreyPopup> {
 
   void _onSubmit() {
     final Map<String, dynamic> data = {
-      'categorey': _inputController.value,
+      'category': _inputController.value,
       'active': _checked,
     };
     Navigator.of(context).pop(data);
@@ -32,7 +32,7 @@ class _AddCategoreyPopupState extends State<AddCategoreyPopup> {
       ),
       actionsPadding: EdgeInsets.only(right: 15),
       backgroundColor: Theme.of(context).canvasColor,
-      title: const Text('Add Categorey'),
+      title: const Text('Add Category'),
       content: new Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,7 +44,7 @@ class _AddCategoreyPopupState extends State<AddCategoreyPopup> {
             child: TextField(
               autofocus: true,
               controller: _inputController,
-              decoration: InputDecoration(labelText: 'Categorey'),
+              decoration: InputDecoration(labelText: 'Category'),
             ),
           ),
           SizedBox(
@@ -58,7 +58,7 @@ class _AddCategoreyPopupState extends State<AddCategoreyPopup> {
               ),
               Expanded(
                   child: Text(
-                'Set as selected categorey',
+                'Set as selected category',
                 style: Theme.of(context).textTheme.bodyText2,
               ))
             ],

@@ -75,21 +75,21 @@ class _AddTaskPageState extends State<AddTaskPage>
     }
   }
 
-  Future<void> _onAddCategorey(Map<String, dynamic> value) {
+  Future<void> _onAddCategory(Map<String, dynamic> value) {
     // final Map<String, dynamic> data = {
-    //   'categorey': _inputController.value,
+    //   'category': _inputController.value,
     //   'active': _checked,
     // };
   }
 
-  void _switchCategoreyAdd() {
+  void _switchCategoryAdd() {
     _animationController.forward();
     showDialog(
       context: context,
-      builder: (BuildContext context) => AddCategoreyPopup(),
+      builder: (BuildContext context) => AddCategoryPopup(),
     ).then((value) => {
           _animationController.reverse(),
-          _onAddCategorey(value),
+          _onAddCategory(value),
         });
   }
 
@@ -136,7 +136,7 @@ class _AddTaskPageState extends State<AddTaskPage>
                 height: 50,
               ),
               Text(
-                'Categorey',
+                'Category',
                 style: Theme.of(context).primaryTextTheme.headline6,
               ),
               Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
@@ -214,7 +214,7 @@ class _AddTaskPageState extends State<AddTaskPage>
                           .animate(_animationController),
                       child: Icon(Icons.add),
                     ),
-                    onPressed: _switchCategoreyAdd,
+                    onPressed: _switchCategoryAdd,
                   ),
                 ),
               ]),

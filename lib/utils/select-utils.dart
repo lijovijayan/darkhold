@@ -8,7 +8,7 @@ Widget dropdownBuilder(
         ? ListTile(
             contentPadding: EdgeInsets.all(0),
             title: Text(
-              "Select Categorey",
+              "Select Category",
               style: Theme.of(context).primaryTextTheme.subtitle1,
             ),
           )

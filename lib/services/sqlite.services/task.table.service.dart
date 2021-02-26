@@ -3,7 +3,7 @@ import 'package:sqflite/sqflite.dart';
 import '../../models/models.dart';
 import '../../sqlite.config.dart';
 
-class TaskTable {
+class TaskTableService {
   static insert(MTask task) async {
     final Database db = await SQLiteConfig.database;
     try {
@@ -13,7 +13,7 @@ class TaskTable {
         date: task.date,
         time: task.time,
         completed: 0,
-        categoreyId: task.categoreyId,
+        categoryId: task.categoryId,
       );
       await db.insert(
         TASK,
@@ -36,7 +36,7 @@ class TaskTable {
             name: results[i]['name'],
             date: results[i]['date'],
             time: results[i]['time'],
-            categoreyId: results[i]['categoreyId'],
+            categoryId: results[i]['categoryId'],
             completed: results[i]['completed']);
       });
     } catch (err) {
@@ -45,21 +45,21 @@ class TaskTable {
     }
   }
 
-  static Future<List<MTask>> getTasksByCategoreyId(int categoreyId) async {
+  static Future<List<MTask>> getTasksByCategoryId(int categoryId) async {
     final Database db = await SQLiteConfig.database;
     final String sql = '''SELECT 
                           TASK.id,
-                          TASK.categoreyId,
-                          CATEGOREY.name as categoreyName,
+                          TASK.categoryId,
+                          CATEGORY.name as categoryName,
                           TASK.name,
                           TASK.date,
                           TASK.time,
                           TASK.completed,
-                          CATEGOREY.color as color
+                          CATEGORY.color as color
                           FROM TASK 
-                          INNER JOIN CATEGOREY ON 
-                          TASK.categoreyId = CATEGOREY.id
-                          WHERE TASK.categoreyId = $categoreyId''';
+                          INNER JOIN CATEGORY ON 
+                          TASK.categoryId = CATEGORY.id
+                          WHERE TASK.categoryId = $categoryId''';
     try {
       final List<Map<String, dynamic>> results = await db.rawQuery(sql);
       return List.generate(results.length, (i) {
@@ -68,8 +68,8 @@ class TaskTable {
             name: results[i]['name'],
             date: results[i]['date'],
             time: results[i]['time'],
-            categoreyId: results[i]['categoreyId'],
-            categoreyName: results[i]['categoreyName'],
+            categoryId: results[i]['categoryId'],
+            categoryName: results[i]['categoryName'],
             completed: results[i]['completed'] == 1 ? true : false,
             color: results[i]['color']);
       });
@@ -90,7 +90,7 @@ class TaskTable {
             name: results[i]['name'],
             date: results[i]['date'],
             time: results[i]['time'],
-            categoreyId: results[i]['categoreyId'],
+            categoryId: results[i]['categoryId'],
             completed: results[i]['completed']);
       });
     } catch (err) {

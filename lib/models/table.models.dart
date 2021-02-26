@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart';
 
-class TCategorey {
+class TCategory {
   final int id;
   final String name;
   final String color;
-  TCategorey({
+  TCategory({
     @required this.id,
     @required this.name,
     @required this.color,
@@ -20,14 +20,14 @@ class TCategorey {
 
 class TTask {
   final int id;
-  final int categoreyId;
+  final int categoryId;
   final String name;
   final String date;
   final String time;
   final int completed;
   TTask({
     @required this.id,
-    @required this.categoreyId,
+    @required this.categoryId,
     @required this.name,
     @required this.date,
     @required this.time,
@@ -37,7 +37,7 @@ class TTask {
     return {
       'id': id,
       'name': name,
-      'categoreyId': categoreyId,
+      'categoryId': categoryId,
       'date': date,
       'time': time,
       'completed': completed,

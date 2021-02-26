@@ -76,8 +76,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               physics: BouncingScrollPhysics(),
               itemCount: 10,
               itemBuilder: (BuildContext _context, int index) {
-                return CategoreyCard(
-                  categorey: '',
+                return CategoryCard(
+                  category: '',
                   totalTaskCount: 25,
                   completedTasks: index,
                   progressColor: HexColor.fromHex('#FFFFFF'),

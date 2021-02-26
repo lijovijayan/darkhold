@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-const String CATEGOREY = 'CATEGOREY';
+const String CATEGORY = 'CATEGORY';
 const String TASK = 'TASK';
 
 class SQLiteConfig {
   static Future<Database> database;
-  static const String _categorey_table_create = '''
-    CREATE TABLE IF NOT EXISTS $CATEGOREY(
+  static const String _category_table_create = '''
+    CREATE TABLE IF NOT EXISTS $CATEGORY(
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT,
       color TEXT
@@ -16,12 +16,12 @@ class SQLiteConfig {
   static const String _task_table_create = '''
     CREATE TABLE IF NOT EXISTS $TASK(
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      categoreyId INTEGER NOT NULL,
+      categoryId INTEGER NOT NULL,
       name TEXT,
       completed INTEGER,
       date TEXT,
       time TEXT,
-      FOREIGN KEY(categoreyId) REFERENCES CATEGOREY(id)
+      FOREIGN KEY(categoryId) REFERENCES CATEGORY(id)
       ON DELETE CASCADE
     )''';
   static void syncDB() async {
@@ -34,7 +34,7 @@ class SQLiteConfig {
   }
 
   static Future _onCreate(Database db, int version) async {
-    await db.execute(_categorey_table_create);
+    await db.execute(_category_table_create);
     await db.execute(_task_table_create);
   }
 

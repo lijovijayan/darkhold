@@ -3,15 +3,15 @@ import 'package:sqflite/sqflite.dart';
 import '../../models/models.dart';
 import '../../sqlite.config.dart';
 
-class CategoreyTable {
-  static insert(MCategory categorey) async {
+class CategoryTableService {
+  static insert(MCategory category) async {
     final Database db = await SQLiteConfig.database;
     try {
-      TCategorey _categorey =
-          TCategorey(id: null, color: categorey.color, name: categorey.name);
+      TCategory _category =
+          TCategory(id: null, color: category.color, name: category.name);
       await db.insert(
-        CATEGOREY,
-        _categorey.toMap(),
+        CATEGORY,
+        _category.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
     } catch (err) {
@@ -23,16 +23,16 @@ class CategoreyTable {
   static Future<List<MCategory>> getAllCategories() async {
     final Database db = await SQLiteConfig.database;
     const String sql = '''SELECT
-                        CATEGOREY.id,
-                        CATEGOREY.name,
-                        CATEGOREY.color,
-	                      SUM(CASE WHEN TASK.categoreyId = CATEGOREY.id 
+                        CATEGORY.id,
+                        CATEGORY.name,
+                        CATEGORY.color,
+	                      SUM(CASE WHEN TASK.categoryId = CATEGORY.id 
                           THEN 1 ELSE 0 END) as totalTasks,
-    	                  SUM(CASE WHEN TASK.completed = 1 AND TASK.categoreyId = CATEGOREY.id 
+    	                  SUM(CASE WHEN TASK.completed = 1 AND TASK.categoryId = CATEGORY.id 
                           THEN 1 ELSE 0 END) as completedTasks
-                        FROM CATEGOREY
+                        FROM CATEGORY
                         LEFT JOIN TASK
-                        GROUP BY CATEGOREY.id''';
+                        GROUP BY CATEGORY.id''';
     try {
       final List<Map<String, dynamic>> results = await db.rawQuery(sql);
       return List.generate(results.length, (i) {
@@ -53,25 +53,25 @@ class CategoreyTable {
   static delete(int id) async {
     try {
       final Database db = await SQLiteConfig.database;
-      return await db.rawQuery('DELETE FROM $CATEGOREY WHERE id=$id');
+      return await db.rawQuery('DELETE FROM $CATEGORY WHERE id=$id');
     } catch (err) {
       print(err);
       return null;
     }
   }
 
-  static Future<List<MCategory>> getCategoreyById(int id) async {
+  static Future<List<MCategory>> getCategoryById(int id) async {
     try {
       final Database db = await SQLiteConfig.database;
-      final sql = '''SELECT CATEGOREY.id,
-                    CATEGOREY.name,
-                    CATEGOREY.color,
-                    SUM(CASE WHEN TASK.categoreyId = CATEGOREY.id 
+      final sql = '''SELECT CATEGORY.id,
+                    CATEGORY.name,
+                    CATEGORY.color,
+                    SUM(CASE WHEN TASK.categoryId = CATEGORY.id 
                       THEN 1 ELSE 0 END) as totalTasks,
-                    SUM(CASE WHEN TASK.completed = 1 AND TASK.categoreyId = CATEGOREY.id 
+                    SUM(CASE WHEN TASK.completed = 1 AND TASK.categoryId = CATEGORY.id 
                       THEN 1 ELSE 0 END) as completedTasks
-                    FROM CATEGOREY LEFT JOIN TASK 
-                    WHERE CATEGOREY.id = $id''';
+                    FROM CATEGORY LEFT JOIN TASK 
+                    WHERE CATEGORY.id = $id''';
       final List<Map<String, dynamic>> results = await db.rawQuery(sql);
       return List.generate(results.length, (i) {
         return MCategory(
@@ -91,7 +91,7 @@ class CategoreyTable {
   static drop() async {
     final Database db = await SQLiteConfig.database;
     try {
-      return await db.rawQuery('DROP TABLE IF EXISTS $CATEGOREY');
+      return await db.rawQuery('DROP TABLE IF EXISTS $CATEGORY');
     } catch (err) {
       print(err);
       return null;

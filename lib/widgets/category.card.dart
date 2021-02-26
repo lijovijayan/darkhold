@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 
-class CategoreyCard extends StatelessWidget {
+class CategoryCard extends StatelessWidget {
   final int totalTaskCount;
-  final String categorey;
+  final String category;
   final int completedTasks;
   final Color progressColor;
-  CategoreyCard(
-      {@required this.totalTaskCount,
-      @required this.categorey,
-      @required this.completedTasks,
-      @required this.progressColor,
-      });
+  CategoryCard({
+    @required this.totalTaskCount,
+    @required this.category,
+    @required this.completedTasks,
+    @required this.progressColor,
+  });
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -27,14 +27,15 @@ class CategoreyCard extends StatelessWidget {
               ),
               SizedBox(height: 10),
               Text(
-                this.categorey,
+                this.category,
                 style: Theme.of(context).textTheme.headline5,
               ),
               Expanded(
                 child: SizedBox(),
               ),
               LinearProgressIndicator(
-                valueColor: new AlwaysStoppedAnimation<Color>(this.progressColor),
+                valueColor:
+                    new AlwaysStoppedAnimation<Color>(this.progressColor),
                 value: this.completedTasks / this.totalTaskCount,
               ),
             ],
