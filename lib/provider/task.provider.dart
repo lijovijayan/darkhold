@@ -1,21 +1,25 @@
-import 'package:darkhold/models/models.dart';
-import 'package:darkhold/services/sqlite.services/task.table.service.dart';
+import 'package:flutter/foundation.dart';
+
+import '../models/models.dart';
+import '../services/sqlite.services/task.table.service.dart';
 
 enum TaskList {
   byTime,
   byCategory,
 }
 
-class PTask {
+class PTask extends ChangeNotifier {
   List<MTask> _tasks;
   get tasks => this._tasks;
 
-  addTask(
-    int categoryId,
-    String name,
-    String date,
-    String time,
-  ) {}
+  addTask({int categoryId, String name, String date, String time}) {
+    TaskTableService.insert(
+      categoryId: categoryId,
+      name: name,
+      date: date,
+      time: time,
+    );
+  }
 
   void fetchTaskList(TaskList type, dynamic data) {
     switch (type) {

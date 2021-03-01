@@ -4,16 +4,16 @@ import '../../models/models.dart';
 import '../../sqlite.config.dart';
 
 class TaskTableService {
-  static insert(MTask task) async {
+  static insert({int categoryId, String name, String date, String time}) async {
     final Database db = await SQLiteConfig.database;
     try {
       TTask _task = TTask(
         id: null,
-        name: task.name,
-        date: task.date,
-        time: task.time,
+        name: name,
+        date: date,
+        time: time,
         completed: 0,
-        categoryId: task.categoryId,
+        categoryId: categoryId,
       );
       await db.insert(
         TASK,

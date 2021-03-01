@@ -1,8 +1,12 @@
+import 'package:darkhold/provider/category.provider.dart';
+import 'package:provider/provider.dart';
+
 import '../models/models.dart';
 import '../utils/select-utils.dart';
-import '../widgets/widgets.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+
+import 'pages.dart';
 
 class AddTaskPage extends StatefulWidget {
   @override
@@ -11,6 +15,8 @@ class AddTaskPage extends StatefulWidget {
 
 class _AddTaskPageState extends State<AddTaskPage>
     with TickerProviderStateMixin {
+  final _formKey = GlobalKey<FormState>();
+
   DateTime _selectedDate = DateTime.now();
   TimeOfDay _selectedTime = TimeOfDay.now();
 
@@ -75,7 +81,9 @@ class _AddTaskPageState extends State<AddTaskPage>
     }
   }
 
-  Future<void> _onAddCategory(Map<String, dynamic> value) {
+  void _onAddCategory(Map<String, dynamic> value) {
+    final PCategory category = Provider.of<PCategory>(context);
+    category.addCategory(value['category']);
     // final Map<String, dynamic> data = {
     //   'category': _inputController.value,
     //   'active': _checked,
@@ -111,162 +119,165 @@ class _AddTaskPageState extends State<AddTaskPage>
             top: 20,
             bottom: 80,
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              RichText(
-                text: TextSpan(children: [
-                  TextSpan(
-                    text: 'Add New',
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline3
-                        .copyWith(fontWeight: FontWeight.bold),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                RichText(
+                  text: TextSpan(children: [
+                    TextSpan(
+                      text: 'Add New',
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline3
+                          .copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    TextSpan(
+                      text: ' Task',
+                      style: Theme.of(context)
+                          .primaryTextTheme
+                          .headline3
+                          .copyWith(fontWeight: FontWeight.normal),
+                    ),
+                  ]),
+                ),
+                SizedBox(
+                  height: 50,
+                ),
+                Text(
+                  'Category',
+                  style: Theme.of(context).primaryTextTheme.headline6,
+                ),
+                Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+                  Expanded(
+                    child: DropdownSearch<MCategory>(
+                      validator: (v) => v == null ? "required field" : null,
+                      mode: Mode.MENU,
+                      compareFn: (MCategory i, MCategory s) {
+                        if (i != null && s != null) {
+                          return i.id == s.id;
+                        }
+                        return false;
+                      },
+                      onChanged: (MCategory data) {
+                        print(data.name);
+                      },
+                      popupItemBuilder: selectboxItemBuilder,
+                      dropdownBuilder: dropdownBuilder,
+                      showSelectedItem: true,
+                      items: [
+                        MCategory(
+                          id: 0,
+                          name: 'Catagorey 1',
+                          color: 'red',
+                          completedTasks: 0,
+                          totalTasks: 0,
+                        ),
+                        MCategory(
+                          id: 1,
+                          name: 'Catagorey 2',
+                          color: 'red',
+                          completedTasks: 0,
+                          totalTasks: 0,
+                        ),
+                        MCategory(
+                          id: 2,
+                          name: 'Catagorey 3',
+                          color: 'red',
+                          completedTasks: 0,
+                          totalTasks: 0,
+                        ),
+                        MCategory(
+                          id: 3,
+                          name: 'Catagorey 4',
+                          color: 'red',
+                          completedTasks: 0,
+                          totalTasks: 0,
+                        ),
+                        MCategory(
+                          id: 4,
+                          name: 'Catagorey 5',
+                          color: 'red',
+                          completedTasks: 0,
+                          totalTasks: 0,
+                        ),
+                      ],
+                      showClearButton: true,
+                    ),
                   ),
-                  TextSpan(
-                    text: ' Task',
-                    style: Theme.of(context)
-                        .primaryTextTheme
-                        .headline3
-                        .copyWith(fontWeight: FontWeight.normal),
+                  Container(
+                    height: 70,
+                    alignment: Alignment.bottomCenter,
+                    padding: EdgeInsets.only(bottom: 3),
+                    decoration: BoxDecoration(
+                      border: Border(
+                          bottom: Theme.of(context)
+                              .inputDecorationTheme
+                              .enabledBorder
+                              .borderSide),
+                    ),
+                    child: IconButton(
+                      splashRadius: 25,
+                      icon: RotationTransition(
+                        turns: Tween(begin: 0.0, end: 0.125)
+                            .animate(_animationController),
+                        child: Icon(Icons.add),
+                      ),
+                      onPressed: _switchCategoryAdd,
+                    ),
                   ),
                 ]),
-              ),
-              SizedBox(
-                height: 50,
-              ),
-              Text(
-                'Category',
-                style: Theme.of(context).primaryTextTheme.headline6,
-              ),
-              Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                Expanded(
-                  child: DropdownSearch<MCategory>(
-                    validator: (v) => v == null ? "required field" : null,
-                    mode: Mode.MENU,
-                    compareFn: (MCategory i, MCategory s) {
-                      if (i != null && s != null) {
-                        return i.id == s.id;
-                      }
-                      return false;
-                    },
-                    onChanged: (MCategory data) {
-                      print(data.name);
-                    },
-                    popupItemBuilder: selectboxItemBuilder,
-                    dropdownBuilder: dropdownBuilder,
-                    showSelectedItem: true,
-                    items: [
-                      MCategory(
-                        id: 0,
-                        name: 'Catagorey 1',
-                        color: 'red',
-                        completedTasks: 0,
-                        totalTasks: 0,
-                      ),
-                      MCategory(
-                        id: 1,
-                        name: 'Catagorey 2',
-                        color: 'red',
-                        completedTasks: 0,
-                        totalTasks: 0,
-                      ),
-                      MCategory(
-                        id: 2,
-                        name: 'Catagorey 3',
-                        color: 'red',
-                        completedTasks: 0,
-                        totalTasks: 0,
-                      ),
-                      MCategory(
-                        id: 3,
-                        name: 'Catagorey 4',
-                        color: 'red',
-                        completedTasks: 0,
-                        totalTasks: 0,
-                      ),
-                      MCategory(
-                        id: 4,
-                        name: 'Catagorey 5',
-                        color: 'red',
-                        completedTasks: 0,
-                        totalTasks: 0,
-                      ),
-                    ],
-                    showClearButton: true,
+                SizedBox(
+                  height: 30,
+                ),
+                Text(
+                  'Title',
+                  style: Theme.of(context).primaryTextTheme.headline6,
+                ),
+                TextFormField(
+                  decoration: InputDecoration(
+                    hintText: 'Enter Here...',
                   ),
                 ),
-                Container(
-                  height: 70,
-                  alignment: Alignment.bottomCenter,
-                  padding: EdgeInsets.only(bottom: 3),
-                  decoration: BoxDecoration(
-                    border: Border(
-                        bottom: Theme.of(context)
-                            .inputDecorationTheme
-                            .enabledBorder
-                            .borderSide),
-                  ),
-                  child: IconButton(
-                    splashRadius: 25,
-                    icon: RotationTransition(
-                      turns: Tween(begin: 0.0, end: 0.125)
-                          .animate(_animationController),
-                      child: Icon(Icons.add),
-                    ),
-                    onPressed: _switchCategoryAdd,
+                SizedBox(
+                  height: 30,
+                ),
+                Text(
+                  'Date',
+                  style: Theme.of(context).primaryTextTheme.headline6,
+                ),
+                TextFormField(
+                  controller: _dateController,
+                  onTap: () {
+                    _selectDate(context);
+                  },
+                  readOnly: true,
+                  decoration: InputDecoration(
+                    suffixIcon: Icon(Icons.calendar_today),
+                    hintText: 'DD:MM:YYYY',
                   ),
                 ),
-              ]),
-              SizedBox(
-                height: 30,
-              ),
-              Text(
-                'Title',
-                style: Theme.of(context).primaryTextTheme.headline6,
-              ),
-              TextFormField(
-                decoration: InputDecoration(
-                  hintText: 'Enter Here...',
+                SizedBox(
+                  height: 30,
                 ),
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              Text(
-                'Date',
-                style: Theme.of(context).primaryTextTheme.headline6,
-              ),
-              TextFormField(
-                controller: _dateController,
-                onTap: () {
-                  _selectDate(context);
-                },
-                readOnly: true,
-                decoration: InputDecoration(
-                  suffixIcon: Icon(Icons.calendar_today),
-                  hintText: 'DD:MM:YYYY',
+                Text(
+                  'Time',
+                  style: Theme.of(context).primaryTextTheme.headline6,
                 ),
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              Text(
-                'Time',
-                style: Theme.of(context).primaryTextTheme.headline6,
-              ),
-              TextFormField(
-                controller: _timeController,
-                onTap: () {
-                  _selectTime(context);
-                },
-                readOnly: true,
-                decoration: InputDecoration(
-                  suffixIcon: Icon(Icons.alarm),
-                  hintText: 'HH:MM:XX',
+                TextFormField(
+                  controller: _timeController,
+                  onTap: () {
+                    _selectTime(context);
+                  },
+                  readOnly: true,
+                  decoration: InputDecoration(
+                    suffixIcon: Icon(Icons.alarm),
+                    hintText: 'HH:MM:XX',
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       );

@@ -1,11 +1,21 @@
-import 'package:darkhold/sqlite.config.dart';
-import 'package:darkhold/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'pages/pages.dart';
+import 'provider/category.provider.dart';
+import 'provider/task.provider.dart';
+import 'sqlite.config.dart';
+import 'theme.dart';
 
 void main() {
   SQLiteConfig.syncDB();
-  runApp(MyApp());
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider<PTask>(create: (_) => PTask()),
+      ChangeNotifierProvider<PCategory>(create: (_) => PCategory()),
+    ],
+    child: MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {

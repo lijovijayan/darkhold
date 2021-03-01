@@ -4,16 +4,21 @@ import '../../models/models.dart';
 import '../../sqlite.config.dart';
 
 class CategoryTableService {
-  static insert(MCategory category) async {
+  static Future<MCategory> insert({String color, String name}) async {
     final Database db = await SQLiteConfig.database;
     try {
-      TCategory _category =
-          TCategory(id: null, color: category.color, name: category.name);
-      await db.insert(
+      TCategory _category = TCategory(id: null, color: color, name: name);
+      final id = await db.insert(
         CATEGORY,
         _category.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
+      if (id != null) {
+        return new MCategory(
+            id: id, name: name, totalTasks: 0, completedTasks: 0, color: color);
+      } else {
+        throw ('something went wrong');
+      }
     } catch (err) {
       print(err);
       return null;

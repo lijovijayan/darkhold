@@ -17,7 +17,7 @@ class _AddCategoryPopupState extends State<AddCategoryPopup> {
 
   void _onSubmit() {
     final Map<String, dynamic> data = {
-      'category': _inputController.value,
+      'category': _inputController.value.text,
       'active': _checked,
     };
     Navigator.of(context).pop(data);
