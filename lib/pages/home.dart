@@ -1,3 +1,7 @@
+import 'package:darkhold/provider/category.provider.dart';
+import 'package:darkhold/provider/task.provider.dart';
+import 'package:provider/provider.dart';
+
 import '../utils/common.utils.dart';
 import '../widgets/widgets.dart';
 import './pages.dart';
@@ -71,19 +75,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           Container(
             padding: EdgeInsets.only(left: 20),
             height: 200,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              physics: BouncingScrollPhysics(),
-              itemCount: 10,
-              itemBuilder: (BuildContext _context, int index) {
-                return CategoryCard(
-                  category: '',
-                  totalTaskCount: 25,
-                  completedTasks: index,
-                  progressColor: HexColor.fromHex('#FFFFFF'),
-                );
-              },
-            ),
+            child: CategoryList(),
           ),
           SizedBox(height: 20),
           Padding(
@@ -93,22 +85,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               style: Theme.of(_context).primaryTextTheme.subtitle1,
             ),
           ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: ListView.builder(
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: 10,
-              shrinkWrap: true,
-              itemBuilder: (BuildContext _, int index) {
-                print(index);
-                return TaskCard(
-                  completed: true,
-                  id: index,
-                  name: 'Random Task',
-                );
-              },
-            ),
-          ),
+          TaskList(),
         ],
       ),
     );
@@ -163,5 +140,52 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         ),
       ),
     );
+  }
+}
+
+class TaskList extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      child:
+          Consumer(builder: (BuildContext _context, PTask task, Widget child) {
+        return ListView.builder(
+          physics: NeverScrollableScrollPhysics(),
+          itemCount: task.tasks.length,
+          shrinkWrap: true,
+          itemBuilder: (BuildContext _, int index) {
+            print(index);
+            return TaskCard(
+              completed: true,
+              id: index,
+              name: task.tasks[index].name,
+            );
+          },
+        );
+      }),
+    );
+  }
+}
+
+class CategoryList extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Consumer(
+        builder: (BuildContext _context, PCategory category, Widget child) {
+      return ListView.builder(
+        scrollDirection: Axis.horizontal,
+        physics: BouncingScrollPhysics(),
+        itemCount: category.categories.length,
+        itemBuilder: (BuildContext _context, int index) {
+          return CategoryCard(
+            category: category.categories[index].name,
+            totalTaskCount: category.categories[index].completedTasks,
+            completedTasks: index,
+            progressColor: HexColor.fromHex(category.categories[index].color),
+          );
+        },
+      );
+    });
   }
 }

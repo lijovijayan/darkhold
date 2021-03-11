@@ -6,7 +6,7 @@ const String CATEGORY = 'CATEGORY';
 const String TASK = 'TASK';
 
 class SQLiteConfig {
-  static Future<Database> database;
+  static Future<Database> _database;
   static const String _category_table_create = '''
     CREATE TABLE IF NOT EXISTS $CATEGORY(
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -26,11 +26,23 @@ class SQLiteConfig {
     )''';
   static void syncDB() async {
     WidgetsFlutterBinding.ensureInitialized();
-    database = openDatabase(
+    _database = openDatabase(
         join(await getDatabasesPath(), 'darkhold_database.db'),
         version: 1,
         onCreate: _onCreate,
         onConfigure: _onConfigure);
+  }
+
+  static get database async {
+    if (_database != null) {
+      return _database;
+    } else {
+      return openDatabase(
+          join(await getDatabasesPath(), 'darkhold_database.db'),
+          version: 1,
+          onCreate: _onCreate,
+          onConfigure: _onConfigure);
+    }
   }
 
   static Future _onCreate(Database db, int version) async {

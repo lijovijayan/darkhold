@@ -26,18 +26,32 @@ class TaskTableService {
     }
   }
 
-  static Future<List<TTask>> getAllTasks() async {
+  static Future<List<MTask>> getAllTasks() async {
     final Database db = await SQLiteConfig.database;
+    final String sql = '''SELECT 
+                          TASK.id,
+                          TASK.categoryId,
+                          CATEGORY.name as categoryName,
+                          TASK.name,
+                          TASK.date,
+                          TASK.time,
+                          TASK.completed,
+                          CATEGORY.color as color
+                          FROM TASK 
+                          INNER JOIN CATEGORY ON 
+                          TASK.categoryId = CATEGORY.id''';
     try {
-      final List<Map<String, dynamic>> results = await db.query(TASK);
+      final List<Map<String, dynamic>> results = await db.rawQuery(sql);
       return List.generate(results.length, (i) {
-        return TTask(
+        return MTask(
             id: results[i]['id'],
             name: results[i]['name'],
             date: results[i]['date'],
             time: results[i]['time'],
             categoryId: results[i]['categoryId'],
-            completed: results[i]['completed']);
+            categoryName: results[i]['categoryName'],
+            completed: results[i]['completed'] == 1 ? true : false,
+            color: results[i]['color']);
       });
     } catch (err) {
       print(err);

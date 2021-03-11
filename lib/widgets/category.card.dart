@@ -36,7 +36,9 @@ class CategoryCard extends StatelessWidget {
               LinearProgressIndicator(
                 valueColor:
                     new AlwaysStoppedAnimation<Color>(this.progressColor),
-                value: this.completedTasks / this.totalTaskCount,
+                value: this.totalTaskCount > 0
+                    ? this.completedTasks / this.totalTaskCount
+                    : 0,
               ),
             ],
           ),

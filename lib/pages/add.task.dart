@@ -1,42 +1,32 @@
-import 'package:darkhold/provider/category.provider.dart';
 import 'package:provider/provider.dart';
-
-import '../models/models.dart';
-import '../utils/select-utils.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
-
 import 'pages.dart';
+import '../models/models.dart';
+import '../utils/select-utils.dart';
+import '../provider/category.provider.dart';
 
 class AddTaskPage extends StatefulWidget {
   @override
   _AddTaskPageState createState() => _AddTaskPageState();
 }
 
-class _AddTaskPageState extends State<AddTaskPage>
-    with TickerProviderStateMixin {
+class _AddTaskPageState extends State<AddTaskPage> {
   final _formKey = GlobalKey<FormState>();
 
   DateTime _selectedDate = DateTime.now();
   TimeOfDay _selectedTime = TimeOfDay.now();
-
-  AnimationController _animationController;
 
   TextEditingController _dateController = TextEditingController();
   TextEditingController _timeController = TextEditingController();
 
   @override
   void initState() {
-    _animationController = AnimationController(
-      duration: const Duration(milliseconds: 200),
-      vsync: this,
-    );
     super.initState();
   }
 
   @override
   void dispose() {
-    _animationController.dispose();
     this._dateController.dispose();
     this._timeController.dispose();
     super.dispose();
@@ -79,26 +69,6 @@ class _AddTaskPageState extends State<AddTaskPage>
         _selectedTime = picked;
       });
     }
-  }
-
-  void _onAddCategory(Map<String, dynamic> value) {
-    final PCategory category = Provider.of<PCategory>(context);
-    category.addCategory(value['category']);
-    // final Map<String, dynamic> data = {
-    //   'category': _inputController.value,
-    //   'active': _checked,
-    // };
-  }
-
-  void _switchCategoryAdd() {
-    _animationController.forward();
-    showDialog(
-      context: context,
-      builder: (BuildContext context) => AddCategoryPopup(),
-    ).then((value) => {
-          _animationController.reverse(),
-          _onAddCategory(value),
-        });
   }
 
   String _getFormatedValue(int value) {
@@ -149,85 +119,7 @@ class _AddTaskPageState extends State<AddTaskPage>
                   'Category',
                   style: Theme.of(context).primaryTextTheme.headline6,
                 ),
-                Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                  Expanded(
-                    child: DropdownSearch<MCategory>(
-                      validator: (v) => v == null ? "required field" : null,
-                      mode: Mode.MENU,
-                      compareFn: (MCategory i, MCategory s) {
-                        if (i != null && s != null) {
-                          return i.id == s.id;
-                        }
-                        return false;
-                      },
-                      onChanged: (MCategory data) {
-                        print(data.name);
-                      },
-                      popupItemBuilder: selectboxItemBuilder,
-                      dropdownBuilder: dropdownBuilder,
-                      showSelectedItem: true,
-                      items: [
-                        MCategory(
-                          id: 0,
-                          name: 'Catagorey 1',
-                          color: 'red',
-                          completedTasks: 0,
-                          totalTasks: 0,
-                        ),
-                        MCategory(
-                          id: 1,
-                          name: 'Catagorey 2',
-                          color: 'red',
-                          completedTasks: 0,
-                          totalTasks: 0,
-                        ),
-                        MCategory(
-                          id: 2,
-                          name: 'Catagorey 3',
-                          color: 'red',
-                          completedTasks: 0,
-                          totalTasks: 0,
-                        ),
-                        MCategory(
-                          id: 3,
-                          name: 'Catagorey 4',
-                          color: 'red',
-                          completedTasks: 0,
-                          totalTasks: 0,
-                        ),
-                        MCategory(
-                          id: 4,
-                          name: 'Catagorey 5',
-                          color: 'red',
-                          completedTasks: 0,
-                          totalTasks: 0,
-                        ),
-                      ],
-                      showClearButton: true,
-                    ),
-                  ),
-                  Container(
-                    height: 70,
-                    alignment: Alignment.bottomCenter,
-                    padding: EdgeInsets.only(bottom: 3),
-                    decoration: BoxDecoration(
-                      border: Border(
-                          bottom: Theme.of(context)
-                              .inputDecorationTheme
-                              .enabledBorder
-                              .borderSide),
-                    ),
-                    child: IconButton(
-                      splashRadius: 25,
-                      icon: RotationTransition(
-                        turns: Tween(begin: 0.0, end: 0.125)
-                            .animate(_animationController),
-                        child: Icon(Icons.add),
-                      ),
-                      onPressed: _switchCategoryAdd,
-                    ),
-                  ),
-                ]),
+                CategorySelect(),
                 SizedBox(
                   height: 30,
                 ),
@@ -329,5 +221,95 @@ class _AddTaskPageState extends State<AddTaskPage>
         onTap: _onAddTask,
       ),
     );
+  }
+}
+
+class CategorySelect extends StatefulWidget {
+  @override
+  _CategorySelectState createState() => _CategorySelectState();
+}
+
+class _CategorySelectState extends State<CategorySelect>
+    with TickerProviderStateMixin {
+  AnimationController _animationController;
+
+  @override
+  void initState() {
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    );
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  void _switchCategoryAdd(BuildContext context, PCategory category) {
+    _animationController.forward();
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => AddCategoryPopup(),
+    ).then((value) async {
+      String _category = value['category'];
+      // bool _isActive = value['active'];
+      category.addCategory(_category);
+      _animationController.reverse();
+    });
+  }
+
+  @override
+  Widget build(BuildContext _context) {
+    return Consumer(
+        builder: (BuildContext context, PCategory category, Widget child) {
+      return Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+        Expanded(
+          child: DropdownSearch<MCategory>(
+            validator: (v) => v == null ? "required field" : null,
+            mode: Mode.MENU,
+            compareFn: (MCategory i, MCategory s) {
+              if (i != null && s != null) {
+                return i.id == s.id;
+              }
+              return false;
+            },
+            onChanged: (MCategory data) {
+              print(data.name);
+            },
+            popupItemBuilder: selectboxItemBuilder,
+            dropdownBuilder: dropdownBuilder,
+            showSelectedItem: true,
+            items: category.categories,
+            showClearButton: true,
+          ),
+        ),
+        Container(
+          height: 70,
+          alignment: Alignment.bottomCenter,
+          padding: EdgeInsets.only(bottom: 3),
+          decoration: BoxDecoration(
+            border: Border(
+                bottom: Theme.of(context)
+                    .inputDecorationTheme
+                    .enabledBorder
+                    .borderSide),
+          ),
+          child: IconButton(
+            splashRadius: 25,
+            icon: RotationTransition(
+              turns:
+                  Tween(begin: 0.0, end: 0.125).animate(_animationController),
+              child: Icon(Icons.add),
+            ),
+            onPressed: () {
+              _switchCategoryAdd(context, category);
+            },
+          ),
+        ),
+      ]);
+    });
   }
 }

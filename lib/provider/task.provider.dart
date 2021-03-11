@@ -9,8 +9,11 @@ enum TaskList {
 }
 
 class PTask extends ChangeNotifier {
-  List<MTask> _tasks;
-  get tasks => this._tasks;
+  PTask() {
+    fetchAllTasks();
+  }
+  List<MTask> _tasks = [];
+  List<MTask> get tasks => this._tasks;
 
   addTask({int categoryId, String name, String date, String time}) {
     TaskTableService.insert(
@@ -38,13 +41,26 @@ class PTask extends ChangeNotifier {
     // TaskTableService.getTasksByCategoryId();
   }
 
+  void fetchAllTasks() async {
+    try {
+      final List<MTask> tasks = await TaskTableService.getAllTasks();
+      this._tasks = tasks;
+      notifyListeners();
+    } catch (err) {
+      this._tasks = [];
+      notifyListeners();
+    }
+  }
+
   void fetchTasksByCategory(int categoryId) async {
     try {
       final List<MTask> tasks =
           await TaskTableService.getTasksByCategoryId(categoryId);
       this._tasks = tasks;
+      notifyListeners();
     } catch (err) {
       this._tasks = [];
+      notifyListeners();
     }
   }
 }

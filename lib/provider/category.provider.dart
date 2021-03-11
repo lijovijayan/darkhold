@@ -5,13 +5,14 @@ import '../models/models.dart';
 class PCategory with ChangeNotifier {
   PCategory() {
     fetchAllCategories();
+    print('constructor');
   }
 
   List<MCategory> _categories = [];
 
   List<MCategory> get categories => this._categories;
 
-  void addCategory(name) async {
+  Future<void> addCategory(String name) async {
     const String color = '#FFFFFF';
     final MCategory category =
         await CategoryTableService.insert(name: name, color: color);
