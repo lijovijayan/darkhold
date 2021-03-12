@@ -4,7 +4,8 @@ import '../../models/models.dart';
 import '../../sqlite.config.dart';
 
 class TaskTableService {
-  static insert({int categoryId, String name, String date, String time}) async {
+  static Future<MTask> insert(
+      {MCategory category, String name, String date, String time}) async {
     final Database db = await SQLiteConfig.database;
     try {
       TTask _task = TTask(
@@ -13,13 +14,22 @@ class TaskTableService {
         date: date,
         time: time,
         completed: 0,
-        categoryId: categoryId,
+        categoryId: category.id,
       );
-      await db.insert(
+      final id = await db.insert(
         TASK,
         _task.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
+      return MTask(
+          id: id,
+          categoryId: category.id,
+          categoryName: category.name,
+          name: _task.name,
+          date: _task.date,
+          time: _task.time,
+          completed: false,
+          color: category.color);
     } catch (err) {
       print(err);
       return null;
@@ -117,6 +127,29 @@ class TaskTableService {
     try {
       final Database db = await SQLiteConfig.database;
       return await db.rawQuery('DELETE FROM $TASK WHERE id=$id');
+    } catch (err) {
+      print(err);
+      return null;
+    }
+  }
+
+  static Future<MTask> update(MTask task) async {
+    final Database db = await SQLiteConfig.database;
+    try {
+      TTask _task = TTask(
+        id: task.id,
+        name: task.name,
+        date: task.date,
+        time: task.time,
+        completed: task.completed ? 1 : 0,
+        categoryId: task.categoryId,
+      );
+      await db.update(
+        TASK,
+        _task.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+      return task;
     } catch (err) {
       print(err);
       return null;

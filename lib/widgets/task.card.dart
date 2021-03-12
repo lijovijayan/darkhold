@@ -4,21 +4,25 @@ class TaskCard extends StatelessWidget {
   final int id;
   final String name;
   final bool completed;
+  final Function(bool) onTap;
   TaskCard({
     @required this.id,
     @required this.name,
     @required this.completed,
+    @required this.onTap,
   });
   @override
   Widget build(BuildContext context) {
     return Card(
       child: InkWell(
         borderRadius: BorderRadius.circular(15),
-        onTap: () {},
+        onTap: () {
+          this.onTap(!this.completed);
+        },
         child: Padding(
           padding: EdgeInsets.all(20),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               AnimatedSwitcher(
                 duration: Duration(milliseconds: 500),
@@ -51,7 +55,7 @@ class TaskCard extends StatelessWidget {
               Expanded(
                 child: Text(
                   this.name,
-                  style: Theme.of(context).primaryTextTheme.subtitle2,
+                  style: Theme.of(context).primaryTextTheme.subtitle1,
                 ),
               ),
             ],

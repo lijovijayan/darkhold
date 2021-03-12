@@ -15,13 +15,15 @@ class PTask extends ChangeNotifier {
   List<MTask> _tasks = [];
   List<MTask> get tasks => this._tasks;
 
-  addTask({int categoryId, String name, String date, String time}) {
-    TaskTableService.insert(
-      categoryId: categoryId,
+  addTask({MCategory category, String name, String date, String time}) async {
+    MTask task = await TaskTableService.insert(
+      category: category,
       name: name,
       date: date,
       time: time,
     );
+    _tasks.add(task);
+    notifyListeners();
   }
 
   void fetchTaskList(TaskList type, dynamic data) {
@@ -60,6 +62,21 @@ class PTask extends ChangeNotifier {
       notifyListeners();
     } catch (err) {
       this._tasks = [];
+      notifyListeners();
+    }
+  }
+
+  void updateTask(MTask task) async {
+    try {
+      final MTask _task = await TaskTableService.update(task);
+      this._tasks = this._tasks.map((t) {
+        if (t.id == _task.id) {
+          return _task;
+        }
+        return t;
+      }).toList();
+      notifyListeners();
+    } catch (err) {
       notifyListeners();
     }
   }

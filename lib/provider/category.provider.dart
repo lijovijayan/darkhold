@@ -1,3 +1,4 @@
+import 'package:darkhold/utils/common.utils.dart';
 import 'package:flutter/material.dart';
 import '../services/services.dart';
 import '../models/models.dart';
@@ -13,7 +14,7 @@ class PCategory with ChangeNotifier {
   List<MCategory> get categories => this._categories;
 
   Future<void> addCategory(String name) async {
-    const String color = '#FFFFFF';
+    String color = getRandomColor();
     final MCategory category =
         await CategoryTableService.insert(name: name, color: color);
     if (category != null) {

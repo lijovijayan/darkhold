@@ -1,3 +1,4 @@
+import 'package:darkhold/models/models.dart';
 import 'package:darkhold/provider/category.provider.dart';
 import 'package:darkhold/provider/task.provider.dart';
 import 'package:provider/provider.dart';
@@ -155,12 +156,21 @@ class TaskList extends StatelessWidget {
           itemCount: task.tasks.length,
           shrinkWrap: true,
           itemBuilder: (BuildContext _, int index) {
-            print(index);
             return TaskCard(
-              completed: true,
-              id: index,
-              name: task.tasks[index].name,
-            );
+                completed: task.tasks[index].completed,
+                id: task.tasks[index].id,
+                name: task.tasks[index].name,
+                onTap: (bool completed) {
+                  context.read<PTask>().updateTask(MTask(
+                      id: task.tasks[index].id,
+                      categoryId: task.tasks[index].categoryId,
+                      categoryName: task.tasks[index].categoryName,
+                      name: task.tasks[index].name,
+                      date: task.tasks[index].date,
+                      time: task.tasks[index].time,
+                      completed: completed,
+                      color: task.tasks[index].color));
+                });
           },
         );
       }),
@@ -180,8 +190,8 @@ class CategoryList extends StatelessWidget {
         itemBuilder: (BuildContext _context, int index) {
           return CategoryCard(
             category: category.categories[index].name,
-            totalTaskCount: category.categories[index].completedTasks,
-            completedTasks: index,
+            totalTaskCount: category.categories[index].totalTasks,
+            completedTasks: category.categories[index].completedTasks,
             progressColor: HexColor.fromHex(category.categories[index].color),
           );
         },

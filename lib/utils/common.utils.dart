@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'dart:math';
 
 extension HexColor on Color {
   /// String is in the format "aabbcc" or "ffaabbcc" with an optional leading "#".
@@ -15,4 +16,14 @@ extension HexColor on Color {
       '${red.toRadixString(16).padLeft(2, '0')}'
       '${green.toRadixString(16).padLeft(2, '0')}'
       '${blue.toRadixString(16).padLeft(2, '0')}';
+}
+
+String getRandomColor() {
+  var random = new Random();
+  String letters = '0123456789ABCDEF';
+  String color = '#';
+  for (var i = 0; i < 6; i++) {
+    color += letters[(random.nextInt(16 - 1)).floor()];
+  }
+  return color;
 }

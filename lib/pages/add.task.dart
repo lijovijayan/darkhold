@@ -1,3 +1,4 @@
+import 'package:darkhold/provider/task.provider.dart';
 import 'package:provider/provider.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +33,15 @@ class _AddTaskPageState extends State<AddTaskPage> {
     super.dispose();
   }
 
-  void _onAddTask() {
+  void _onAddTask(BuildContext context) {
+    if (this._formKey.currentState.validate()) {
+      this._formKey.currentState.save();
+    }
+    context.read<PTask>().addTask(
+        category: TaskFormData.category,
+        name: TaskFormData.name,
+        date: TaskFormData.date,
+        time: TaskFormData.time);
     Navigator.of(context).pop();
   }
 
@@ -64,7 +73,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
           picked.period == DayPeriod.pm ? picked.hour - 12 : picked.hour;
       final hour = _getFormatedValue(_hour);
       final minute = _getFormatedValue(picked.minute);
-      _timeController.value = TextEditingValue(text: '$hour:$minute: $period');
+      _timeController.value = TextEditingValue(text: '$hour:$minute $period');
       setState(() {
         _selectedTime = picked;
       });
@@ -128,6 +137,9 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   style: Theme.of(context).primaryTextTheme.headline6,
                 ),
                 TextFormField(
+                  onSaved: (String name) {
+                    TaskFormData.name = name;
+                  },
                   decoration: InputDecoration(
                     hintText: 'Enter Here...',
                   ),
@@ -143,6 +155,9 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   controller: _dateController,
                   onTap: () {
                     _selectDate(context);
+                  },
+                  onSaved: (String date) {
+                    TaskFormData.date = date;
                   },
                   readOnly: true,
                   decoration: InputDecoration(
@@ -161,6 +176,9 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   controller: _timeController,
                   onTap: () {
                     _selectTime(context);
+                  },
+                  onSaved: (String time) {
+                    TaskFormData.time = time;
                   },
                   readOnly: true,
                   decoration: InputDecoration(
@@ -218,7 +236,9 @@ class _AddTaskPageState extends State<AddTaskPage> {
             ],
           ),
         ),
-        onTap: _onAddTask,
+        onTap: () {
+          _onAddTask(context);
+        },
       ),
     );
   }
@@ -268,6 +288,9 @@ class _CategorySelectState extends State<CategorySelect>
       return Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
         Expanded(
           child: DropdownSearch<MCategory>(
+            onSaved: (_category) {
+              TaskFormData.category = _category;
+            },
             validator: (v) => v == null ? "required field" : null,
             mode: Mode.MENU,
             compareFn: (MCategory i, MCategory s) {
@@ -312,4 +335,12 @@ class _CategorySelectState extends State<CategorySelect>
       ]);
     });
   }
+}
+
+class TaskFormData {
+  static MCategory category;
+  static String name;
+  static String color;
+  static String date;
+  static String time;
 }
