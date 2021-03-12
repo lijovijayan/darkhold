@@ -68,14 +68,26 @@ class PTask extends ChangeNotifier {
 
   void updateTask(MTask task) async {
     try {
-      final MTask _task = await TaskTableService.update(task);
-      this._tasks = this._tasks.map((t) {
-        if (t.id == _task.id) {
-          return _task;
-        }
-        return t;
-      }).toList();
+      final index = this._tasks.indexWhere((t) => t.id == task.id);
+      if (index != -1) {
+        this._tasks[index] = task;
+        notifyListeners();
+      }
+    } catch (err) {
       notifyListeners();
+    }
+  }
+
+  void updateTableTask(MTask task) async {
+    try {
+      final index = this._tasks.indexWhere((t) => t.id == task.id);
+      if (index != -1) {
+        final MTask _task = await TaskTableService.update(task);
+        if (_task != null) {
+          this._tasks[index] = task;
+          notifyListeners();
+        }
+      }
     } catch (err) {
       notifyListeners();
     }

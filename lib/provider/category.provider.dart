@@ -33,9 +33,18 @@ class PCategory with ChangeNotifier {
 
   void updateCategory(MCategory category) {
     final index =
-        this.categories.indexWhere((_category) => _category.id == category.id);
+        this._categories.indexWhere((_category) => _category.id == category.id);
     if (index != -1) {
-      this.categories[index] = category;
+      this._categories[index] = category;
+      notifyListeners();
+    }
+  }
+
+  void updateTableCategory(MCategory category) {
+    final index =
+        this._categories.indexWhere((_category) => _category.id == category.id);
+    if (index != -1) {
+      this._categories[index] = category;
       notifyListeners();
     }
   }

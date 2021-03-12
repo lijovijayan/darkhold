@@ -9,15 +9,15 @@ class SQLiteConfig {
   static Future<Database> _database;
   static const String _category_table_create = '''
     CREATE TABLE IF NOT EXISTS $CATEGORY(
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT,
+      id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+      name TEXT UNIQUE,
       color TEXT
     )''';
   static const String _task_table_create = '''
     CREATE TABLE IF NOT EXISTS $TASK(
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
       categoryId INTEGER NOT NULL,
-      name TEXT,
+      name TEXT UNIQUE,
       completed INTEGER,
       date TEXT,
       time TEXT,

@@ -55,6 +55,29 @@ class CategoryTableService {
     }
   }
 
+  static Future<MCategory> update({MCategory category}) async {
+    final Database db = await SQLiteConfig.database;
+    try {
+      TCategory _category =
+          TCategory(id: null, color: category.color, name: category.name);
+      final id = await db.update(
+        CATEGORY,
+        _category.toMap(),
+        where: 'id = ?',
+        whereArgs: [category.id],
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+      if (id != null) {
+        return category;
+      } else {
+        throw ('something went wrong');
+      }
+    } catch (err) {
+      print(err);
+      return null;
+    }
+  }
+
   static delete(int id) async {
     try {
       final Database db = await SQLiteConfig.database;

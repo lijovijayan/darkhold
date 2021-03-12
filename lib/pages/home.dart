@@ -161,7 +161,7 @@ class TaskList extends StatelessWidget {
                 id: task.tasks[index].id,
                 name: task.tasks[index].name,
                 onTap: (bool completed) {
-                  context.read<PTask>().updateTask(MTask(
+                  context.read<PTask>().updateTableTask(MTask(
                       id: task.tasks[index].id,
                       categoryId: task.tasks[index].categoryId,
                       categoryName: task.tasks[index].categoryName,

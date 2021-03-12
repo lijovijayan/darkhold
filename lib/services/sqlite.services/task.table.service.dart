@@ -147,6 +147,8 @@ class TaskTableService {
       await db.update(
         TASK,
         _task.toMap(),
+        where: 'id = ?',
+        whereArgs: [task.id],
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
       return task;
