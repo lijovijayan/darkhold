@@ -1,4 +1,5 @@
 import 'package:darkhold/provider/task.provider.dart';
+import 'package:form_field_validator/form_field_validator.dart';
 import 'package:provider/provider.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
@@ -33,23 +34,23 @@ class _AddTaskPageState extends State<AddTaskPage> {
     super.dispose();
   }
 
-  void _onAddTask(BuildContext context) {
+  void _onAddTask() {
     if (this._formKey.currentState.validate()) {
       this._formKey.currentState.save();
+      context.read<PTask>().addTask(
+          category: TaskFormData.category,
+          name: TaskFormData.name,
+          date: TaskFormData.date,
+          time: TaskFormData.time);
+      Navigator.of(context).pop();
     }
-    context.read<PTask>().addTask(
-        category: TaskFormData.category,
-        name: TaskFormData.name,
-        date: TaskFormData.date,
-        time: TaskFormData.time);
-    Navigator.of(context).pop();
   }
 
-  Future<void> _selectDate(BuildContext context) async {
+  Future<void> _selectDate() async {
     final DateTime picked = await showDatePicker(
         context: context,
         initialDate: _selectedDate,
-        firstDate: DateTime(2015, 8),
+        firstDate: DateTime.now(),
         lastDate: DateTime(2101));
     if (picked != null && picked != _selectedDate) {
       final day = _getFormatedValue(picked.day);
@@ -62,7 +63,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
     }
   }
 
-  Future<void> _selectTime(BuildContext context) async {
+  Future<void> _selectTime() async {
     final TimeOfDay picked = await showTimePicker(
       context: context,
       initialTime: _selectedTime,
@@ -140,6 +141,11 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   onSaved: (String name) {
                     TaskFormData.name = name;
                   },
+                  validator: MultiValidator([
+                    RequiredValidator(errorText: 'name is required'),
+                    MinLengthValidator(4,
+                        errorText: 'name must be atleast 4 characters long'),
+                  ]),
                   decoration: InputDecoration(
                     hintText: 'Enter Here...',
                   ),
@@ -153,8 +159,9 @@ class _AddTaskPageState extends State<AddTaskPage> {
                 ),
                 TextFormField(
                   controller: _dateController,
+                  validator: RequiredValidator(errorText: 'date is required'),
                   onTap: () {
-                    _selectDate(context);
+                    _selectDate();
                   },
                   onSaved: (String date) {
                     TaskFormData.date = date;
@@ -174,8 +181,9 @@ class _AddTaskPageState extends State<AddTaskPage> {
                 ),
                 TextFormField(
                   controller: _timeController,
+                  validator: RequiredValidator(errorText: 'time is required'),
                   onTap: () {
-                    _selectTime(context);
+                    _selectTime();
                   },
                   onSaved: (String time) {
                     TaskFormData.time = time;
@@ -236,9 +244,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
             ],
           ),
         ),
-        onTap: () {
-          _onAddTask(context);
-        },
+        onTap: _onAddTask,
       ),
     );
   }
@@ -268,16 +274,21 @@ class _CategorySelectState extends State<CategorySelect>
     super.dispose();
   }
 
-  void _switchCategoryAdd(BuildContext context, PCategory category) {
+  void _switchCategoryAdd(PCategory category) async {
     _animationController.forward();
     showDialog(
       context: context,
       builder: (BuildContext context) => AddCategoryPopup(),
     ).then((value) async {
       String _category = value['category'];
-      // bool _isActive = value['active'];
-      category.addCategory(_category);
-      _animationController.reverse();
+      bool _isActive = value['active'];
+      final MCategory _newCategory = await category.addCategory(_category);
+      _animationController.reverse().then((value) {
+        if (_isActive) {
+          TaskFormData.category = _newCategory;
+          setState(() {});
+        }
+      });
     });
   }
 
@@ -288,10 +299,11 @@ class _CategorySelectState extends State<CategorySelect>
       return Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
         Expanded(
           child: DropdownSearch<MCategory>(
+            selectedItem: TaskFormData.category,
             onSaved: (_category) {
               TaskFormData.category = _category;
             },
-            validator: (v) => v == null ? "required field" : null,
+            validator: (v) => v == null ? "category is required" : null,
             mode: Mode.MENU,
             compareFn: (MCategory i, MCategory s) {
               if (i != null && s != null) {
@@ -328,7 +340,7 @@ class _CategorySelectState extends State<CategorySelect>
               child: Icon(Icons.add),
             ),
             onPressed: () {
-              _switchCategoryAdd(context, category);
+              _switchCategoryAdd(category);
             },
           ),
         ),

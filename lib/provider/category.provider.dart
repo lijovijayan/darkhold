@@ -13,15 +13,17 @@ class PCategory with ChangeNotifier {
 
   List<MCategory> get categories => this._categories;
 
-  Future<void> addCategory(String name) async {
+  Future<MCategory> addCategory(String name) async {
     String color = getRandomColor();
     final MCategory category =
         await CategoryTableService.insert(name: name, color: color);
     if (category != null) {
       this._categories.add(category);
       notifyListeners();
+      return category;
     } else {
       print('Error: Someting went wrong while adding new Category');
+      return null;
     }
   }
 
