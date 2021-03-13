@@ -37,11 +37,18 @@ class _AddTaskPageState extends State<AddTaskPage> {
   void _onAddTask() {
     if (this._formKey.currentState.validate()) {
       this._formKey.currentState.save();
+      MCategory _category = MCategory(
+          id: TaskFormData.category.id,
+          name: TaskFormData.category.name,
+          totalTasks: TaskFormData.category.totalTasks + 1,
+          completedTasks: TaskFormData.category.completedTasks,
+          color: TaskFormData.category.color);
       context.read<PTask>().addTask(
-          category: TaskFormData.category,
+          category: _category,
           name: TaskFormData.name,
           date: TaskFormData.date,
           time: TaskFormData.time);
+      context.read<PCategory>().updateCategory(_category);
       Navigator.of(context).pop();
     }
   }

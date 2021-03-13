@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'widgets.dart';
+
 class CategoryCard extends StatelessWidget {
   final int totalTaskCount;
   final String category;
@@ -33,13 +35,10 @@ class CategoryCard extends StatelessWidget {
               Expanded(
                 child: SizedBox(),
               ),
-              LinearProgressIndicator(
-                valueColor:
-                    new AlwaysStoppedAnimation<Color>(this.progressColor),
-                value: this.totalTaskCount > 0
-                    ? this.completedTasks / this.totalTaskCount
-                    : 0,
-              ),
+              ControlledProgressIndicator(
+                  total: this.totalTaskCount,
+                  completed: this.completedTasks,
+                  color: this.progressColor),
             ],
           ),
         ),

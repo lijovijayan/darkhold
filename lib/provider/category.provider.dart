@@ -42,6 +42,23 @@ class PCategory with ChangeNotifier {
     }
   }
 
+  void updateCompletedTaskCountById(int categoryId, bool completed) {
+    final index =
+        this._categories.indexWhere((_category) => _category.id == categoryId);
+    if (index != -1) {
+      final MCategory category = this._categories[index];
+      this._categories[index] = MCategory(
+          id: category.id,
+          name: category.name,
+          totalTasks: category.totalTasks,
+          completedTasks: completed
+              ? category.completedTasks + 1
+              : category.completedTasks - 1,
+          color: category.color);
+      notifyListeners();
+    }
+  }
+
   void updateTableCategory(MCategory category) {
     final index =
         this._categories.indexWhere((_category) => _category.id == category.id);

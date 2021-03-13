@@ -5,11 +5,14 @@ class TaskCard extends StatelessWidget {
   final String name;
   final bool completed;
   final Function(bool) onTap;
+  final Color color;
+  final Duration _animationDuration = Duration(milliseconds: 200);
   TaskCard({
     @required this.id,
     @required this.name,
     @required this.completed,
     @required this.onTap,
+    @required this.color,
   });
   @override
   Widget build(BuildContext context) {
@@ -24,32 +27,39 @@ class TaskCard extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              AnimatedSwitcher(
-                duration: Duration(milliseconds: 500),
-                transitionBuilder:
-                    (Widget widget, Animation<double> animation) {
-                  return ScaleTransition(
-                    scale: animation,
-                    child: widget,
-                  );
-                },
-                child: completed
-                    ? Container(
-                        width: 30,
-                        height: 30,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.red,
-                        ),
-                      )
-                    : Container(
-                        width: 30,
-                        height: 30,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.green,
-                        ),
-                      ),
+              Container(
+                padding: EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  color: this.color,
+                  shape: BoxShape.circle,
+                ),
+                child: AnimatedContainer(
+                  duration: _animationDuration,
+                  width: 20,
+                  height: 20,
+                  decoration: BoxDecoration(
+                    color: completed
+                        ? Colors.transparent
+                        : Theme.of(context).cardTheme.color,
+                    shape: BoxShape.circle,
+                  ),
+                  child: AnimatedSwitcher(
+                    duration: _animationDuration,
+                    transitionBuilder:
+                        (Widget widget, Animation<double> animation) {
+                      return ScaleTransition(
+                        scale: animation,
+                        child: widget,
+                      );
+                    },
+                    child: completed
+                        ? Icon(
+                            Icons.check,
+                            size: 20,
+                          )
+                        : SizedBox(),
+                  ),
+                ),
               ),
               SizedBox(width: 10),
               Expanded(

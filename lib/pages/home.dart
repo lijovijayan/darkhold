@@ -145,6 +145,21 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 }
 
 class TaskList extends StatelessWidget {
+  onTapTask(BuildContext context, MTask task, bool completed) {
+    context.read<PTask>().updateTableTask(MTask(
+        id: task.id,
+        categoryId: task.categoryId,
+        categoryName: task.categoryName,
+        name: task.name,
+        date: task.date,
+        time: task.time,
+        completed: completed,
+        color: task.color));
+    context
+        .read<PCategory>()
+        .updateCompletedTaskCountById(task.categoryId, completed);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -152,27 +167,20 @@ class TaskList extends StatelessWidget {
       child:
           Consumer(builder: (BuildContext _context, PTask task, Widget child) {
         return ListView.builder(
-          physics: NeverScrollableScrollPhysics(),
-          itemCount: task.tasks.length,
-          shrinkWrap: true,
-          itemBuilder: (BuildContext _, int index) {
-            return TaskCard(
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: task.tasks.length,
+            shrinkWrap: true,
+            itemBuilder: (BuildContext _, int index) {
+              return TaskCard(
                 completed: task.tasks[index].completed,
                 id: task.tasks[index].id,
                 name: task.tasks[index].name,
+                color: HexColor.fromHex(task.tasks[index].color),
                 onTap: (bool completed) {
-                  context.read<PTask>().updateTableTask(MTask(
-                      id: task.tasks[index].id,
-                      categoryId: task.tasks[index].categoryId,
-                      categoryName: task.tasks[index].categoryName,
-                      name: task.tasks[index].name,
-                      date: task.tasks[index].date,
-                      time: task.tasks[index].time,
-                      completed: completed,
-                      color: task.tasks[index].color));
-                });
-          },
-        );
+                  onTapTask(context, task.tasks[index], completed);
+                },
+              );
+            });
       }),
     );
   }

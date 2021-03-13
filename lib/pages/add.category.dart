@@ -8,6 +8,7 @@ class AddCategoryPopup extends StatefulWidget {
 class _AddCategoryPopupState extends State<AddCategoryPopup> {
   final _inputController = TextEditingController();
   bool _checked = true;
+  bool _isNameInValid = false;
 
   void _onCheck(bool checked) {
     setState(() {
@@ -16,6 +17,16 @@ class _AddCategoryPopupState extends State<AddCategoryPopup> {
   }
 
   void _onSubmit() {
+    if (_inputController.value.text.length < 4) {
+      setState(() {
+        _isNameInValid = true;
+      });
+      return;
+    } else if (_isNameInValid) {
+      setState(() {
+        _isNameInValid = false;
+      });
+    }
     final Map<String, dynamic> data = {
       'category': _inputController.value.text,
       'active': _checked,
@@ -44,7 +55,11 @@ class _AddCategoryPopupState extends State<AddCategoryPopup> {
             child: TextField(
               autofocus: true,
               controller: _inputController,
-              decoration: InputDecoration(labelText: 'Category'),
+              decoration: InputDecoration(
+                  labelText: 'Category',
+                  errorText: _isNameInValid
+                      ? "name must be atleast 4 characters long"
+                      : null),
             ),
           ),
           SizedBox(
