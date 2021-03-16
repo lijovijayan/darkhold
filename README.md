@@ -1,16 +1,3 @@
 # darkhold
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Darkhold App is simple and awesome app to organize your tasks with very easy to use interface. Darkhold can help you to make list of your tasks and in future you can also set Reminder with specific tasks. It reminds you at you specified Time. I believe that we only focus on our Today and Tomorrow tasks, which is most important.  So I made user interface like that so that it can give you a quick view on your day timeline.
