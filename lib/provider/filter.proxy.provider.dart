@@ -24,19 +24,22 @@ class PTaskFilter {
     }
   }
 
-  List<MTask> _getTasksByDate(DateTime time) {
-    return this._tasks.where((t) => t.time == null);
+  List<MTask> _getTasksByDate(DateTime date) {
+    return this._tasks.where((t) =>
+        t.date.day == date.day &&
+        t.date.month == date.month &&
+        t.date.year == date.year);
   }
 
   List<MTask> _getTasksByCategory(int categoryId) {
-    return this._tasks;
+    return this._tasks.where((t) => t.categoryId == categoryId);
   }
 
   List<MTask> _getCompletedTasks() {
-    return this._tasks;
+    return this._tasks.where((t) => t.completed);
   }
 
   List<MTask> _getPendingTasks() {
-    return this._tasks;
+    return this._tasks.where((t) => !t.completed);
   }
 }
