@@ -25,21 +25,24 @@ class PTaskFilter {
   }
 
   List<MTask> _getTasksByDate(DateTime date) {
-    return this._tasks.where((t) =>
-        t.date.day == date.day &&
-        t.date.month == date.month &&
-        t.date.year == date.year);
+    return this
+        ._tasks
+        .where((t) =>
+            t.date.day == date.day &&
+            t.date.month == date.month &&
+            t.date.year == date.year)
+        .toList();
   }
 
   List<MTask> _getTasksByCategory(int categoryId) {
-    return this._tasks.where((t) => t.categoryId == categoryId);
+    return this._tasks.where((t) => t.categoryId == categoryId).toList();
   }
 
   List<MTask> _getCompletedTasks() {
-    return this._tasks.where((t) => t.completed);
+    return this._tasks.where((t) => t.completed).toList();
   }
 
   List<MTask> _getPendingTasks() {
-    return this._tasks.where((t) => !t.completed);
+    return this._tasks.where((t) => !t.completed).toList();
   }
 }
