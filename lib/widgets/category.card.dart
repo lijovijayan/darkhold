@@ -12,7 +12,10 @@ class CategoryCard extends StatelessWidget {
     @required this.category,
     @required this.completedTasks,
     @required this.progressColor,
-  });
+  }) : assert(totalTaskCount != null &&
+            category != null &&
+            completedTasks != null &&
+            progressColor != null);
   @override
   Widget build(BuildContext context) {
     return Container(

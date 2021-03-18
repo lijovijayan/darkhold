@@ -5,7 +5,8 @@ class PTaskFilter {
   final List<MTask> _tasks;
   final TaskFilter _filter;
   final dynamic _filterValue;
-  PTaskFilter(this._tasks, this._filter, this._filterValue);
+  PTaskFilter(this._tasks, this._filter, this._filterValue)
+      : assert(_tasks != null && _filter != null && _filterValue != null);
   get tasks => _getFilteredList();
 
   List<MTask> _getFilteredList() {

@@ -8,7 +8,7 @@ class ControlledProgressIndicator extends StatefulWidget {
     @required this.total,
     @required this.completed,
     @required this.color,
-  });
+  }) : assert(total != null && completed != null && color != null);
   @override
   _ControlledProgressIndicatorState createState() =>
       _ControlledProgressIndicatorState();

@@ -13,7 +13,11 @@ class TaskCard extends StatelessWidget {
     @required this.completed,
     @required this.onTap,
     @required this.color,
-  });
+  }) : assert(id != null &&
+            name != null &&
+            completed != null &&
+            onTap != null &&
+            color != null);
   @override
   Widget build(BuildContext context) {
     return Card(
