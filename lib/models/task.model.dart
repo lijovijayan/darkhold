@@ -1,12 +1,13 @@
-import 'package:flutter/foundation.dart';
+import 'package:darkhold/utils/common.utils.dart';
+import 'package:flutter/material.dart';
 
 class MTask {
   final int id;
   final int categoryId;
   final String categoryName;
   final String name;
-  final String date;
-  final String time;
+  final DateTime date;
+  final TimeOfDay time;
   final bool completed;
   final String color;
   MTask({
@@ -19,4 +20,6 @@ class MTask {
     @required this.completed,
     @required this.color,
   });
+  get dateToString => getFormatedDateString(this.date);
+  get timeToString => getFormatedTimeString(this.time);
 }

@@ -10,47 +10,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-class HomePage extends StatefulWidget {
-  @override
-  _HomePageState createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
-  AnimationController _animationController;
-
+class HomePage extends StatelessWidget {
   final String username = 'Lijo Vijayan';
-
-  @override
-  void initState() {
-    _animationController = AnimationController(
-      duration: const Duration(milliseconds: 200),
-      vsync: this,
-    );
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
-
-  void _onClickAddButton(context) async {
-    _animationController.forward().then((value) => {
-          showModalBottomSheet<void>(
-            context: context,
-            isScrollControlled: true,
-            isDismissible: true,
-            enableDrag: false,
-            builder: (BuildContext context) {
-              return AddTaskPage();
-            },
-          ).then((value) => {_animationController.reverse()})
-        });
-  }
-
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   Widget _renderContent(BuildContext _context) {
     return SingleChildScrollView(
       physics: BouncingScrollPhysics(),
@@ -132,14 +94,57 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         ),
         drawer: AppDrawer(),
         body: _renderContent(context),
-        floatingActionButton: FloatingActionButton(
-          child: RotationTransition(
-            turns: Tween(begin: 0.0, end: 0.25).animate(_animationController),
-            child: Icon(CupertinoIcons.plus),
-          ),
-          onPressed: () => _onClickAddButton(context),
-        ),
+        floatingActionButton: AddButton(),
       ),
+    );
+  }
+}
+
+class AddButton extends StatefulWidget {
+  @override
+  _AddButtonState createState() => _AddButtonState();
+}
+
+class _AddButtonState extends State<AddButton> with TickerProviderStateMixin {
+  AnimationController _animationController;
+
+  @override
+  void initState() {
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    );
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  void _onClickAddButton(context) async {
+    _animationController.forward().then((value) => {
+          showModalBottomSheet<void>(
+            context: context,
+            isScrollControlled: true,
+            isDismissible: true,
+            enableDrag: false,
+            builder: (BuildContext context) {
+              return AddTaskPage();
+            },
+          ).then((value) => {_animationController.reverse()})
+        });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FloatingActionButton(
+      child: RotationTransition(
+        turns: Tween(begin: 0.0, end: 0.25).animate(_animationController),
+        child: Icon(CupertinoIcons.plus),
+      ),
+      onPressed: () => _onClickAddButton(context),
     );
   }
 }

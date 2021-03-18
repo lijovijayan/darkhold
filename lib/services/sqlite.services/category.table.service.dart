@@ -1,7 +1,7 @@
 import 'package:sqflite/sqflite.dart';
 
 import '../../models/models.dart';
-import '../../sqlite.config.dart';
+import '../../config/sqlite.config.dart';
 
 class CategoryTableService {
   static Future<MCategory> insert({String color, String name}) async {

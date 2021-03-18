@@ -1,7 +1,7 @@
 import 'package:sqflite/sqflite.dart';
 
 import '../../models/models.dart';
-import '../../sqlite.config.dart';
+import '../../config/sqlite.config.dart';
 
 class TaskTableService {
   static Future<MTask> insert(
@@ -26,8 +26,8 @@ class TaskTableService {
           categoryId: category.id,
           categoryName: category.name,
           name: _task.name,
-          date: _task.date,
-          time: _task.time,
+          date: _task.dateFromString,
+          time: _task.timeFromString,
           completed: false,
           color: category.color);
     } catch (err) {
@@ -139,8 +139,8 @@ class TaskTableService {
       TTask _task = TTask(
         id: task.id,
         name: task.name,
-        date: task.date,
-        time: task.time,
+        date: task.dateToString,
+        time: task.timeToString,
         completed: task.completed ? 1 : 0,
         categoryId: task.categoryId,
       );

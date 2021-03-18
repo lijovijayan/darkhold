@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import 'pages/pages.dart';
-import 'provider/category.provider.dart';
-import 'provider/task.provider.dart';
-import 'sqlite.config.dart';
+import 'provider/provider.dart';
+import 'config/sqlite.config.dart';
 import 'theme.dart';
 
 void main() {
@@ -13,6 +11,10 @@ void main() {
     providers: [
       ChangeNotifierProvider<PTask>(create: (_) => PTask()),
       ChangeNotifierProvider<PCategory>(create: (_) => PCategory()),
+      ProxyProvider2<PTask, PFilter, PTaskFilter>(
+          update:
+              (BuildContext _, PTask task, PFilter filter, PTaskFilter __) =>
+                  PTaskFilter(task.tasks, filter.filter, filter.filterValue))
     ],
     child: MyApp(),
   ));

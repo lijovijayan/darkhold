@@ -1,4 +1,5 @@
 import 'package:darkhold/provider/task.provider.dart';
+import 'package:darkhold/utils/common.utils.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:provider/provider.dart';
 import 'package:dropdown_search/dropdown_search.dart';
@@ -60,10 +61,8 @@ class _AddTaskPageState extends State<AddTaskPage> {
         firstDate: DateTime.now(),
         lastDate: DateTime(2101));
     if (picked != null && picked != _selectedDate) {
-      final day = _getFormatedValue(picked.day);
-      final month = _getFormatedValue(picked.month);
       _dateController.value =
-          TextEditingValue(text: '$day-$month-${picked.year}');
+          TextEditingValue(text: getFormatedDateString(picked));
       setState(() {
         _selectedDate = picked;
       });
@@ -76,20 +75,12 @@ class _AddTaskPageState extends State<AddTaskPage> {
       initialTime: _selectedTime,
     );
     if (picked != null && picked != _selectedTime) {
-      final period = picked.period == DayPeriod.pm ? 'PM' : 'AM';
-      final _hour =
-          picked.period == DayPeriod.pm ? picked.hour - 12 : picked.hour;
-      final hour = _getFormatedValue(_hour);
-      final minute = _getFormatedValue(picked.minute);
-      _timeController.value = TextEditingValue(text: '$hour:$minute $period');
+      _timeController.value =
+          TextEditingValue(text: getFormatedTimeString(picked));
       setState(() {
         _selectedTime = picked;
       });
     }
-  }
-
-  String _getFormatedValue(int value) {
-    return value < 10 ? '0$value' : '$value';
   }
 
   @override

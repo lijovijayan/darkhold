@@ -1,4 +1,6 @@
+import 'package:darkhold/utils/common.utils.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 class TCategory {
   final int id;
@@ -43,4 +45,7 @@ class TTask {
       'completed': completed,
     };
   }
+
+  DateTime get dateFromString => getDateFromString(this.date);
+  TimeOfDay get timeFromString => getTimeFromString(this.time);
 }
