@@ -1,8 +1,7 @@
 import 'package:darkhold/models/models.dart';
-import 'package:darkhold/provider/category.provider.dart';
-import 'package:darkhold/provider/task.provider.dart';
+import 'package:darkhold/provider/core.provider.dart';
+import 'package:darkhold/provider/provider.dart';
 import 'package:provider/provider.dart';
-
 import '../utils/common.utils.dart';
 import '../widgets/widgets.dart';
 import './pages.dart';
@@ -151,7 +150,7 @@ class _AddButtonState extends State<AddButton> with TickerProviderStateMixin {
 
 class TaskList extends StatelessWidget {
   onTapTask(BuildContext context, MTask task, bool completed) {
-    context.read<PTask>().updateTableTask(MTask(
+    context.read<CoreProvider>().updateTableTask(MTask(
         id: task.id,
         categoryId: task.categoryId,
         categoryName: task.categoryName,
@@ -160,17 +159,14 @@ class TaskList extends StatelessWidget {
         time: task.time,
         completed: completed,
         color: task.color));
-    context
-        .read<PCategory>()
-        .updateCompletedTaskCountById(task.categoryId, completed);
   }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      child:
-          Consumer(builder: (BuildContext _context, PTask task, Widget child) {
+      child: Consumer(
+          builder: (BuildContext _context, TaskProvider task, Widget child) {
         return ListView.builder(
             physics: NeverScrollableScrollPhysics(),
             itemCount: task.tasks.length,
@@ -194,8 +190,8 @@ class TaskList extends StatelessWidget {
 class CategoryList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Consumer(
-        builder: (BuildContext _context, PCategory category, Widget child) {
+    return Consumer(builder:
+        (BuildContext _context, CategoryProvider category, Widget child) {
       return ListView.builder(
         scrollDirection: Axis.horizontal,
         physics: BouncingScrollPhysics(),

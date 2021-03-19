@@ -1,4 +1,4 @@
-export './category.provider.dart';
-export './task.provider.dart';
-export './filter.proxy.provider.dart';
+export './proxy.category.provider.dart';
+export './proxy.task.provider.dart';
 export './filter.provider.dart';
+export './core.provider.dart';

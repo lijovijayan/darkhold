@@ -17,7 +17,7 @@ class CategoryTableService {
         return new MCategory(
             id: id, name: name, totalTasks: 0, completedTasks: 0, color: color);
       } else {
-        throw ('something went wrong');
+        throw ('something went wrong while creating new category !');
       }
     } catch (err) {
       print(err);

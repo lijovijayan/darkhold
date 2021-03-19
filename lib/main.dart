@@ -9,12 +9,18 @@ void main() {
   SQLiteConfig.syncDB();
   runApp(MultiProvider(
     providers: [
-      ChangeNotifierProvider<PTask>(create: (_) => PTask()),
-      ChangeNotifierProvider<PCategory>(create: (_) => PCategory()),
-      ProxyProvider2<PTask, PFilter, PTaskFilter>(
-          update:
-              (BuildContext _, PTask task, PFilter filter, PTaskFilter __) =>
-                  PTaskFilter(task.tasks, filter.filter, filter.filterValue))
+      ChangeNotifierProvider<CoreProvider>(create: (_) => CoreProvider()),
+      ChangeNotifierProvider<FilterProvider>(create: (_) => FilterProvider()),
+      ProxyProvider<CoreProvider, CategoryProvider>(
+        update:
+            (BuildContext _, CoreProvider coreProvider, CategoryProvider __) =>
+                CategoryProvider(coreProvider.categories),
+      ),
+      ProxyProvider2<CoreProvider, FilterProvider, TaskProvider>(
+          update: (BuildContext _, CoreProvider coreProvider,
+                  FilterProvider filter, TaskProvider __) =>
+              TaskProvider(
+                  coreProvider.tasks, filter.filter, filter.filterValue))
     ],
     child: MyApp(),
   ));

@@ -1,3 +1,4 @@
+import 'package:darkhold/utils/common.utils.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../models/models.dart';
@@ -16,20 +17,24 @@ class TaskTableService {
         completed: 0,
         categoryId: category.id,
       );
-      final id = await db.insert(
+      int id = await db.insert(
         TASK,
         _task.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
-      return MTask(
-          id: id,
-          categoryId: category.id,
-          categoryName: category.name,
-          name: _task.name,
-          date: _task.dateFromString,
-          time: _task.timeFromString,
-          completed: false,
-          color: category.color);
+      if (id != null) {
+        return MTask(
+            id: id,
+            categoryId: category.id,
+            categoryName: category.name,
+            name: _task.name,
+            date: _task.dateFromString,
+            time: _task.timeFromString,
+            completed: false,
+            color: category.color);
+      } else {
+        throw 'Someting went wrong while creating new Task !';
+      }
     } catch (err) {
       print(err);
       return null;
@@ -56,8 +61,8 @@ class TaskTableService {
         return MTask(
             id: results[i]['id'],
             name: results[i]['name'],
-            date: results[i]['date'],
-            time: results[i]['time'],
+            date: getDateFromString(results[i]['date']),
+            time: getTimeFromString(results[i]['time']),
             categoryId: results[i]['categoryId'],
             categoryName: results[i]['categoryName'],
             completed: results[i]['completed'] == 1 ? true : false,

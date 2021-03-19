@@ -1,4 +1,4 @@
-import 'package:darkhold/provider/task.provider.dart';
+import 'package:darkhold/provider/core.provider.dart';
 import 'package:darkhold/utils/common.utils.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:provider/provider.dart';
@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'pages.dart';
 import '../models/models.dart';
 import '../utils/select-utils.dart';
-import '../provider/category.provider.dart';
 
 class AddTaskPage extends StatefulWidget {
   @override
@@ -44,12 +43,11 @@ class _AddTaskPageState extends State<AddTaskPage> {
           totalTasks: TaskFormData.category.totalTasks + 1,
           completedTasks: TaskFormData.category.completedTasks,
           color: TaskFormData.category.color);
-      context.read<PTask>().addTask(
+      context.read<CoreProvider>().addTask(
           category: _category,
           name: TaskFormData.name,
           date: TaskFormData.date,
           time: TaskFormData.time);
-      context.read<PCategory>().updateCategory(_category);
       Navigator.of(context).pop();
     }
   }
@@ -272,7 +270,7 @@ class _CategorySelectState extends State<CategorySelect>
     super.dispose();
   }
 
-  void _switchCategoryAdd(PCategory category) async {
+  void _switchCategoryAdd() async {
     _animationController.forward();
     showDialog(
       context: context,
@@ -280,7 +278,8 @@ class _CategorySelectState extends State<CategorySelect>
     ).then((value) async {
       String _category = value['category'];
       bool _isActive = value['active'];
-      final MCategory _newCategory = await category.addCategory(_category);
+      final MCategory _newCategory =
+          await context.read<CoreProvider>().addCategory(_category);
       _animationController.reverse().then((value) {
         if (_isActive) {
           TaskFormData.category = _newCategory;
@@ -292,58 +291,60 @@ class _CategorySelectState extends State<CategorySelect>
 
   @override
   Widget build(BuildContext _context) {
-    return Consumer(
-        builder: (BuildContext context, PCategory category, Widget child) {
-      return Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-        Expanded(
-          child: DropdownSearch<MCategory>(
-            selectedItem: TaskFormData.category,
-            onSaved: (_category) {
-              TaskFormData.category = _category;
-            },
-            validator: (v) => v == null ? "category is required" : null,
-            mode: Mode.MENU,
-            compareFn: (MCategory i, MCategory s) {
-              if (i != null && s != null) {
-                return i.id == s.id;
-              }
-              return false;
-            },
-            onChanged: (MCategory data) {
-              print(data.name);
-            },
-            popupItemBuilder: selectboxItemBuilder,
-            dropdownBuilder: dropdownBuilder,
-            showSelectedItem: true,
-            items: category.categories,
-            showClearButton: true,
-          ),
-        ),
-        Container(
-          height: 70,
-          alignment: Alignment.bottomCenter,
-          padding: EdgeInsets.only(bottom: 3),
-          decoration: BoxDecoration(
-            border: Border(
-                bottom: Theme.of(context)
-                    .inputDecorationTheme
-                    .enabledBorder
-                    .borderSide),
-          ),
-          child: IconButton(
-            splashRadius: 25,
-            icon: RotationTransition(
-              turns:
-                  Tween(begin: 0.0, end: 0.125).animate(_animationController),
-              child: Icon(Icons.add),
+    return Selector<CoreProvider, List<MCategory>>(
+        selector: (_, provider) => provider.categories,
+        builder:
+            (BuildContext context, List<MCategory> categories, Widget child) {
+          return Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+            Expanded(
+              child: DropdownSearch<MCategory>(
+                selectedItem: TaskFormData.category,
+                onSaved: (_category) {
+                  TaskFormData.category = _category;
+                },
+                validator: (v) => v == null ? "category is required" : null,
+                mode: Mode.MENU,
+                compareFn: (MCategory i, MCategory s) {
+                  if (i != null && s != null) {
+                    return i.id == s.id;
+                  }
+                  return false;
+                },
+                onChanged: (MCategory data) {
+                  print(data.name);
+                },
+                popupItemBuilder: selectboxItemBuilder,
+                dropdownBuilder: dropdownBuilder,
+                showSelectedItem: true,
+                items: categories,
+                showClearButton: true,
+              ),
             ),
-            onPressed: () {
-              _switchCategoryAdd(category);
-            },
-          ),
-        ),
-      ]);
-    });
+            Container(
+              height: 70,
+              alignment: Alignment.bottomCenter,
+              padding: EdgeInsets.only(bottom: 3),
+              decoration: BoxDecoration(
+                border: Border(
+                    bottom: Theme.of(context)
+                        .inputDecorationTheme
+                        .enabledBorder
+                        .borderSide),
+              ),
+              child: IconButton(
+                splashRadius: 25,
+                icon: RotationTransition(
+                  turns: Tween(begin: 0.0, end: 0.125)
+                      .animate(_animationController),
+                  child: Icon(Icons.add),
+                ),
+                onPressed: () {
+                  _switchCategoryAdd();
+                },
+              ),
+            ),
+          ]);
+        });
   }
 }
 
