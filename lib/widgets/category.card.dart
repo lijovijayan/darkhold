@@ -3,19 +3,18 @@ import 'package:flutter/material.dart';
 import 'widgets.dart';
 
 class CategoryCard extends StatelessWidget {
+  final Key key;
   final int totalTaskCount;
   final String category;
   final int completedTasks;
   final Color progressColor;
   CategoryCard({
+    this.key,
     @required this.totalTaskCount,
     @required this.category,
     @required this.completedTasks,
     @required this.progressColor,
-  }) : assert(totalTaskCount != null &&
-            category != null &&
-            completedTasks != null &&
-            progressColor != null);
+  }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Container(

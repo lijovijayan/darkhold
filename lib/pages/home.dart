@@ -1,13 +1,13 @@
-import 'package:darkhold/models/models.dart';
-import 'package:darkhold/provider/core.provider.dart';
-import 'package:darkhold/provider/provider.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import '../utils/common.utils.dart';
 import '../widgets/widgets.dart';
 import './pages.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+import '../models/models.dart';
+import '../provider/core.provider.dart';
+import '../provider/provider.dart';
 
 class HomePage extends StatelessWidget {
   final String username = 'Lijo Vijayan';
@@ -58,39 +58,11 @@ class HomePage extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         key: _scaffoldKey,
-        appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(
-              CupertinoIcons.bars,
-              size: 28,
-            ),
-            splashRadius: 25,
-            onPressed: () {
-              _scaffoldKey.currentState.openDrawer();
-            },
-          ),
-          actions: [
-            IconButton(
-              icon: Icon(
-                CupertinoIcons.search,
-                size: 25,
-              ),
-              splashRadius: 25,
-              onPressed: () {},
-            ),
-            SizedBox(
-              width: 5,
-            ),
-            IconButton(
-              icon: Icon(
-                CupertinoIcons.bell,
-                size: 25,
-              ),
-              splashRadius: 25,
-              onPressed: () {},
-            ),
-          ],
-        ),
+        appBar: PreferredSize(
+            preferredSize: Size.fromHeight(kToolbarHeight),
+            child: AppBarWithSearch(
+              onOpenDrawer: () => {this._scaffoldKey.currentState.openDrawer()},
+            )),
         drawer: AppDrawer(),
         body: _renderContent(context),
         floatingActionButton: AddButton(),
@@ -123,17 +95,15 @@ class _AddButtonState extends State<AddButton> with TickerProviderStateMixin {
   }
 
   void _onClickAddButton(context) async {
-    _animationController.forward().then((value) => {
-          showModalBottomSheet<void>(
-            context: context,
-            isScrollControlled: true,
-            isDismissible: true,
-            enableDrag: false,
-            builder: (BuildContext context) {
-              return AddTaskPage();
-            },
-          ).then((value) => {_animationController.reverse()})
-        });
+    _animationController.forward().then((value) {
+      Navigator.push(
+              context,
+              PageTransition(
+                  type: PageTransitionType.bottomToTop, child: AddTaskPage()))
+          .then((dynamic data) {
+        _animationController.reverse();
+      });
+    });
   }
 
   @override
@@ -144,6 +114,106 @@ class _AddButtonState extends State<AddButton> with TickerProviderStateMixin {
         child: Icon(CupertinoIcons.plus),
       ),
       onPressed: () => _onClickAddButton(context),
+    );
+  }
+}
+
+class AppBarWithSearch extends StatefulWidget {
+  final Function onOpenDrawer;
+  AppBarWithSearch({@required this.onOpenDrawer})
+      : assert(onOpenDrawer != null);
+  @override
+  _AppBarWithSearchState createState() => _AppBarWithSearchState();
+}
+
+class _AppBarWithSearchState extends State<AppBarWithSearch> {
+  bool _showSearch = false;
+  void _onSearch(String value) {
+    context.read<FilterProvider>().search(value);
+  }
+
+  void _onSwitchSearch() {
+    if (_showSearch) {
+      context.read<FilterProvider>().search('');
+    }
+    setState(() {
+      _showSearch = !_showSearch;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      leading: IconButton(
+        icon: Icon(
+          CupertinoIcons.bars,
+          size: 28,
+        ),
+        splashRadius: 25,
+        onPressed: this.widget.onOpenDrawer,
+      ),
+      title: AnimatedSwitcher(
+        duration: Duration(milliseconds: 400),
+        transitionBuilder: (Widget widget, Animation<double> animation) {
+          return SizeTransition(
+            sizeFactor: animation,
+            child: widget,
+          );
+        },
+        child: _showSearch
+            ? TextField(
+                key: Key('show-search-field-1'),
+                onChanged: _onSearch,
+                autofocus: true,
+                decoration: InputDecoration(
+                  hintText: "Search here...",
+                  border: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                ))
+            : SizedBox(
+                key: Key('show-search-field-2'),
+              ),
+      ),
+      actions: [
+        AnimatedSwitcher(
+          duration: Duration(milliseconds: 300),
+          transitionBuilder: (Widget widget, Animation<double> animation) {
+            return FadeTransition(
+              opacity: animation,
+              child: widget,
+            );
+          },
+          child: _showSearch
+              ? IconButton(
+                  key: Key('show-search-1'),
+                  onPressed: _onSwitchSearch,
+                  splashRadius: 25,
+                  icon: Icon(
+                    CupertinoIcons.multiply,
+                    size: 25,
+                  ))
+              : IconButton(
+                  key: Key('show-search-2'),
+                  onPressed: _onSwitchSearch,
+                  splashRadius: 25,
+                  icon: Icon(
+                    CupertinoIcons.search,
+                    size: 25,
+                  )),
+        ),
+        SizedBox(
+          width: 5,
+        ),
+        IconButton(
+          icon: Icon(
+            CupertinoIcons.bell,
+            size: 25,
+          ),
+          splashRadius: 25,
+          onPressed: () {},
+        ),
+      ],
     );
   }
 }
@@ -163,26 +233,26 @@ class TaskList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<MTask> tasks = context.watch<TaskProvider>().tasks;
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      child: Consumer(
-          builder: (BuildContext _context, TaskProvider task, Widget child) {
-        return ListView.builder(
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: task.tasks.length,
-            shrinkWrap: true,
-            itemBuilder: (BuildContext _, int index) {
-              return TaskCard(
-                completed: task.tasks[index].completed,
-                id: task.tasks[index].id,
-                name: task.tasks[index].name,
-                color: HexColor.fromHex(task.tasks[index].color),
-                onTap: (bool completed) {
-                  onTapTask(context, task.tasks[index], completed);
-                },
-              );
-            });
-      }),
+      child: ListView.builder(
+        physics: NeverScrollableScrollPhysics(),
+        itemCount: tasks.length,
+        shrinkWrap: true,
+        itemBuilder: (BuildContext _, int index) {
+          return TaskCard(
+            key: Key('task-card-$index'),
+            completed: tasks[index].completed,
+            id: tasks[index].id,
+            name: tasks[index].name,
+            color: HexColor.fromHex(tasks[index].color),
+            onTap: (bool completed) {
+              onTapTask(context, tasks[index], completed);
+            },
+          );
+        },
+      ),
     );
   }
 }
@@ -190,21 +260,20 @@ class TaskList extends StatelessWidget {
 class CategoryList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Consumer(builder:
-        (BuildContext _context, CategoryProvider category, Widget child) {
-      return ListView.builder(
-        scrollDirection: Axis.horizontal,
-        physics: BouncingScrollPhysics(),
-        itemCount: category.categories.length,
-        itemBuilder: (BuildContext _context, int index) {
-          return CategoryCard(
-            category: category.categories[index].name,
-            totalTaskCount: category.categories[index].totalTasks,
-            completedTasks: category.categories[index].completedTasks,
-            progressColor: HexColor.fromHex(category.categories[index].color),
-          );
-        },
-      );
-    });
+    List<MCategory> categories = context.watch<CategoryProvider>().categories;
+    return ListView.builder(
+      scrollDirection: Axis.horizontal,
+      physics: BouncingScrollPhysics(),
+      itemCount: categories.length,
+      itemBuilder: (BuildContext _context, int index) {
+        return CategoryCard(
+          key: Key('cat-card-$index'),
+          category: categories[index].name,
+          totalTaskCount: categories[index].totalTasks,
+          completedTasks: categories[index].completedTasks,
+          progressColor: HexColor.fromHex(categories[index].color),
+        );
+      },
+    );
   }
 }

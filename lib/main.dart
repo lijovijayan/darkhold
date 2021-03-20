@@ -11,16 +11,16 @@ void main() {
     providers: [
       ChangeNotifierProvider<CoreProvider>(create: (_) => CoreProvider()),
       ChangeNotifierProvider<FilterProvider>(create: (_) => FilterProvider()),
-      ProxyProvider<CoreProvider, CategoryProvider>(
-        update:
-            (BuildContext _, CoreProvider coreProvider, CategoryProvider __) =>
-                CategoryProvider(coreProvider.categories),
+      ProxyProvider2<CoreProvider, FilterProvider, CategoryProvider>(
+        update: (BuildContext _, CoreProvider coreProvider,
+                FilterProvider filter, CategoryProvider __) =>
+            CategoryProvider(coreProvider.categories, filter.searchKey),
       ),
       ProxyProvider2<CoreProvider, FilterProvider, TaskProvider>(
           update: (BuildContext _, CoreProvider coreProvider,
                   FilterProvider filter, TaskProvider __) =>
-              TaskProvider(
-                  coreProvider.tasks, filter.filter, filter.filterValue))
+              TaskProvider(coreProvider.tasks, filter.filter,
+                  filter.filterValue, filter.searchKey))
     ],
     child: MyApp(),
   ));

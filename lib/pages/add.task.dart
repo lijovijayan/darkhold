@@ -1,40 +1,16 @@
 import 'package:darkhold/provider/core.provider.dart';
+import 'package:darkhold/provider/proxy.category.provider.dart';
 import 'package:darkhold/utils/common.utils.dart';
+import 'package:darkhold/widgets/bottom.sheet.select.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:provider/provider.dart';
-import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
-import 'pages.dart';
 import '../models/models.dart';
-import '../utils/select-utils.dart';
+import 'pages.dart';
 
-class AddTaskPage extends StatefulWidget {
-  @override
-  _AddTaskPageState createState() => _AddTaskPageState();
-}
-
-class _AddTaskPageState extends State<AddTaskPage> {
+class AddTaskPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
-
-  DateTime _selectedDate = DateTime.now();
-  TimeOfDay _selectedTime = TimeOfDay.now();
-
-  TextEditingController _dateController = TextEditingController();
-  TextEditingController _timeController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    this._dateController.dispose();
-    this._timeController.dispose();
-    super.dispose();
-  }
-
-  void _onAddTask() {
+  void _onAddTask(BuildContext context) {
     if (this._formKey.currentState.validate()) {
       this._formKey.currentState.save();
       MCategory _category = MCategory(
@@ -49,35 +25,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
           date: TaskFormData.date,
           time: TaskFormData.time);
       Navigator.of(context).pop();
-    }
-  }
-
-  Future<void> _selectDate() async {
-    final DateTime picked = await showDatePicker(
-        context: context,
-        initialDate: _selectedDate,
-        firstDate: DateTime.now(),
-        lastDate: DateTime(2101));
-    if (picked != null && picked != _selectedDate) {
-      _dateController.value =
-          TextEditingValue(text: getFormatedDateString(picked));
-      setState(() {
-        _selectedDate = picked;
-      });
-    }
-  }
-
-  Future<void> _selectTime() async {
-    final TimeOfDay picked = await showTimePicker(
-      context: context,
-      initialTime: _selectedTime,
-    );
-    if (picked != null && picked != _selectedTime) {
-      _timeController.value =
-          TextEditingValue(text: getFormatedTimeString(picked));
-      setState(() {
-        _selectedTime = picked;
-      });
     }
   }
 
@@ -153,21 +100,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   'Date',
                   style: Theme.of(context).primaryTextTheme.headline6,
                 ),
-                TextFormField(
-                  controller: _dateController,
-                  validator: RequiredValidator(errorText: 'date is required'),
-                  onTap: () {
-                    _selectDate();
-                  },
-                  onSaved: (String date) {
-                    TaskFormData.date = date;
-                  },
-                  readOnly: true,
-                  decoration: InputDecoration(
-                    suffixIcon: Icon(Icons.calendar_today),
-                    hintText: 'DD:MM:YYYY',
-                  ),
-                ),
+                DateSelect(),
                 SizedBox(
                   height: 30,
                 ),
@@ -175,21 +108,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   'Time',
                   style: Theme.of(context).primaryTextTheme.headline6,
                 ),
-                TextFormField(
-                  controller: _timeController,
-                  validator: RequiredValidator(errorText: 'time is required'),
-                  onTap: () {
-                    _selectTime();
-                  },
-                  onSaved: (String time) {
-                    TaskFormData.time = time;
-                  },
-                  readOnly: true,
-                  decoration: InputDecoration(
-                    suffixIcon: Icon(Icons.alarm),
-                    hintText: 'HH:MM:XX',
-                  ),
-                ),
+                TimeSelect(),
               ],
             ),
           ),
@@ -197,50 +116,155 @@ class _AddTaskPageState extends State<AddTaskPage> {
       );
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          icon: Icon(
-            Icons.chevron_left,
-            size: 30,
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            icon: Icon(
+              Icons.chevron_left,
+              size: 30,
+            ),
+            splashRadius: 25,
           ),
-          splashRadius: 25,
         ),
+        body: _renderContent(),
+        bottomSheet: WidgetsBinding.instance.window.viewInsets.bottom > 0.0
+            ? SizedBox()
+            : InkWell(
+                child: Container(
+                  decoration: BoxDecoration(
+                      border: Border(
+                    top: BorderSide(
+                        width: 1, color: Theme.of(context).hintColor),
+                  )),
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  width: MediaQuery.of(context).size.width,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        width: 36,
+                      ),
+                      Text(
+                        'Add Task',
+                        style: Theme.of(context).textTheme.subtitle1.copyWith(
+                            fontSize: 22, fontWeight: FontWeight.w300),
+                      ),
+                      Icon(
+                        Icons.add,
+                        size: 32,
+                      ),
+                    ],
+                  ),
+                ),
+                onTap: () {
+                  _onAddTask(context);
+                },
+              ),
       ),
-      body: _renderContent(),
-      bottomSheet: InkWell(
-        child: Container(
-          decoration: BoxDecoration(
-              border: Border(
-            top: BorderSide(width: 1, color: Theme.of(context).hintColor),
-          )),
-          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-          width: MediaQuery.of(context).size.width,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              SizedBox(
-                width: 36,
-              ),
-              Text(
-                'Add Task',
-                style: Theme.of(context)
-                    .textTheme
-                    .subtitle1
-                    .copyWith(fontSize: 22, fontWeight: FontWeight.w300),
-              ),
-              Icon(
-                Icons.add,
-                size: 32,
-              ),
-            ],
-          ),
-        ),
-        onTap: _onAddTask,
+    );
+  }
+}
+
+class DateSelect extends StatefulWidget {
+  @override
+  _DateSelectState createState() => _DateSelectState();
+}
+
+class _DateSelectState extends State<DateSelect> {
+  DateTime _selectedDate = DateTime.now();
+  TextEditingController _dateController = TextEditingController();
+
+  Future<void> _selectDate() async {
+    final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: _selectedDate,
+        firstDate: DateTime.now(),
+        lastDate: DateTime(2101));
+    if (picked != null && picked != _selectedDate) {
+      _dateController.value =
+          TextEditingValue(text: getFormatedDateString(picked));
+      setState(() {
+        _selectedDate = picked;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _dateController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: _dateController,
+      validator: RequiredValidator(errorText: 'date is required'),
+      onTap: () {
+        _selectDate();
+      },
+      onSaved: (String date) {
+        TaskFormData.date = date;
+      },
+      readOnly: true,
+      decoration: InputDecoration(
+        suffixIcon: Icon(Icons.calendar_today),
+        hintText: 'DD:MM:YYYY',
+      ),
+    );
+  }
+}
+
+class TimeSelect extends StatefulWidget {
+  @override
+  TimeSelectState createState() => TimeSelectState();
+}
+
+class TimeSelectState extends State<TimeSelect> {
+  TimeOfDay _selectedTime = TimeOfDay.now();
+
+  TextEditingController _timeController = TextEditingController();
+
+  Future<void> _selectTime() async {
+    final TimeOfDay picked = await showTimePicker(
+      context: context,
+      initialTime: _selectedTime,
+    );
+    if (picked != null && picked != _selectedTime) {
+      _timeController.value =
+          TextEditingValue(text: getFormatedTimeString(picked));
+      setState(() {
+        _selectedTime = picked;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _timeController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: _timeController,
+      validator: RequiredValidator(errorText: 'time is required'),
+      onTap: () {
+        _selectTime();
+      },
+      onSaved: (String time) {
+        TaskFormData.time = time;
+      },
+      readOnly: true,
+      decoration: InputDecoration(
+        suffixIcon: Icon(Icons.alarm),
+        hintText: 'HH:MM:XX',
       ),
     );
   }
@@ -251,100 +275,85 @@ class CategorySelect extends StatefulWidget {
   _CategorySelectState createState() => _CategorySelectState();
 }
 
-class _CategorySelectState extends State<CategorySelect>
-    with TickerProviderStateMixin {
-  AnimationController _animationController;
-
-  @override
-  void initState() {
-    _animationController = AnimationController(
-      duration: const Duration(milliseconds: 200),
-      vsync: this,
-    );
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
-
-  void _switchCategoryAdd() async {
-    _animationController.forward();
+class _CategorySelectState extends State<CategorySelect> {
+  MCategory _selectedCategory;
+  TextEditingController _categoryController = TextEditingController();
+  bool _preventBottonSheet = false;
+  void _onAddCategory() async {
+    _preventBottonSheet = true;
     showDialog(
       context: context,
       builder: (BuildContext context) => AddCategoryPopup(),
     ).then((value) async {
-      String _category = value['category'];
-      bool _isActive = value['active'];
-      final MCategory _newCategory =
-          await context.read<CoreProvider>().addCategory(_category);
-      _animationController.reverse().then((value) {
+      _preventBottonSheet = false;
+      if (value != null) {
+        String _category = value['category'];
+        bool _isActive = value['active'];
+        final MCategory _newCategory =
+            await context.read<CoreProvider>().addCategory(_category);
         if (_isActive) {
           TaskFormData.category = _newCategory;
           setState(() {});
         }
-      });
+      }
     });
   }
 
+  Future<void> _onTap() async {
+    if (_preventBottonSheet) return;
+    showModalBottomSheet(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(15),
+        ),
+      ),
+      builder: (BuildContext _) {
+        return BottomSheetSelect<MCategory>(
+          title: 'Select Category',
+          items: context.watch<CategoryProvider>().categories,
+          selected: _selectedCategory,
+          labelSelector: (MCategory cat) => cat.name,
+          onTap: (MCategory category) {
+            if (category != null) {
+              _categoryController.value = TextEditingValue(text: category.name);
+              setState(() {
+                _selectedCategory = category;
+              });
+            }
+          },
+        );
+      },
+      context: context,
+      enableDrag: false,
+    );
+  }
+
   @override
-  Widget build(BuildContext _context) {
-    return Selector<CoreProvider, List<MCategory>>(
-        selector: (_, provider) => provider.categories,
-        builder:
-            (BuildContext context, List<MCategory> categories, Widget child) {
-          return Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-            Expanded(
-              child: DropdownSearch<MCategory>(
-                selectedItem: TaskFormData.category,
-                onSaved: (_category) {
-                  TaskFormData.category = _category;
-                },
-                validator: (v) => v == null ? "category is required" : null,
-                mode: Mode.MENU,
-                compareFn: (MCategory i, MCategory s) {
-                  if (i != null && s != null) {
-                    return i.id == s.id;
-                  }
-                  return false;
-                },
-                onChanged: (MCategory data) {
-                  print(data.name);
-                },
-                popupItemBuilder: selectboxItemBuilder,
-                dropdownBuilder: dropdownBuilder,
-                showSelectedItem: true,
-                items: categories,
-                showClearButton: true,
-              ),
-            ),
-            Container(
-              height: 70,
-              alignment: Alignment.bottomCenter,
-              padding: EdgeInsets.only(bottom: 3),
-              decoration: BoxDecoration(
-                border: Border(
-                    bottom: Theme.of(context)
-                        .inputDecorationTheme
-                        .enabledBorder
-                        .borderSide),
-              ),
-              child: IconButton(
-                splashRadius: 25,
-                icon: RotationTransition(
-                  turns: Tween(begin: 0.0, end: 0.125)
-                      .animate(_animationController),
-                  child: Icon(Icons.add),
-                ),
-                onPressed: () {
-                  _switchCategoryAdd();
-                },
-              ),
-            ),
-          ]);
-        });
+  void dispose() {
+    _categoryController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: _categoryController,
+      readOnly: true,
+      onTap: _onTap,
+      onSaved: (String value) {
+        TaskFormData.category = this._selectedCategory;
+      },
+      validator: MultiValidator([
+        RequiredValidator(errorText: 'category is required'),
+      ]),
+      decoration: InputDecoration(
+        hintText: 'Select Category',
+        suffixIcon: IconButton(
+          icon: Icon(Icons.add),
+          onPressed: _onAddCategory,
+        ),
+      ),
+    );
   }
 }
 

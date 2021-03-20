@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class TaskCard extends StatelessWidget {
+  final Key key;
   final int id;
   final String name;
   final bool completed;
@@ -8,16 +9,13 @@ class TaskCard extends StatelessWidget {
   final Color color;
   final Duration _animationDuration = Duration(milliseconds: 200);
   TaskCard({
+    this.key,
     @required this.id,
     @required this.name,
     @required this.completed,
     @required this.onTap,
     @required this.color,
-  }) : assert(id != null &&
-            name != null &&
-            completed != null &&
-            onTap != null &&
-            color != null);
+  }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Card(
