@@ -40,13 +40,7 @@ class HomePage extends StatelessWidget {
             child: CategoryList(),
           ),
           SizedBox(height: 20),
-          Padding(
-            padding: EdgeInsets.only(left: 20),
-            child: Text(
-              'TODAY\'S TASK',
-              style: Theme.of(_context).primaryTextTheme.subtitle1,
-            ),
-          ),
+          TaskListTitle(),
           TaskList(),
         ],
       ),
@@ -66,6 +60,32 @@ class HomePage extends StatelessWidget {
         drawer: AppDrawer(),
         body: _renderContent(context),
         floatingActionButton: AddButton(),
+      ),
+    );
+  }
+}
+
+class TaskListTitle extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    String title = '';
+    Map<String, dynamic> filter =
+        context.select<FilterProvider, Map<String, dynamic>>(
+            (f) => {'filter': f.filter, 'filterValue': f.filterValue});
+    if (filter['filter'] == TaskFilter.date) {
+      title = 'TODAY\'S TASK';
+    } else if (filter['filter'] == TaskFilter.category) {
+      title = 'CATEGORY: ${filter['filterValue'].name}';
+    } else if (filter['filter'] == TaskFilter.completed) {
+      title = 'COMPLETED TASK\'S';
+    } else if (filter['filter'] == TaskFilter.pending) {
+      title = 'PENDING TASK\'S';
+    }
+    return Padding(
+      padding: EdgeInsets.only(left: 20),
+      child: Text(
+        title,
+        style: Theme.of(context).primaryTextTheme.subtitle1,
       ),
     );
   }
@@ -272,6 +292,11 @@ class CategoryList extends StatelessWidget {
           totalTaskCount: categories[index].totalTasks,
           completedTasks: categories[index].completedTasks,
           progressColor: HexColor.fromHex(categories[index].color),
+          onTap: () {
+            context
+                .read<FilterProvider>()
+                .changeFilter(TaskFilter.category, value: categories[index]);
+          },
         );
       },
     );

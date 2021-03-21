@@ -27,15 +27,17 @@ class _ControlledProgressIndicatorState
     )..addListener(() {
         setState(() {});
       });
-    _controller.animateTo(
-        this.widget.total > 0 ? this.widget.completed / this.widget.total : 0);
+    _controller.animateTo(this.widget.total > 0
+        ? (this.widget.completed / this.widget.total)
+        : 0.0);
     super.initState();
   }
 
   @override
   void didUpdateWidget(covariant ControlledProgressIndicator oldWidget) {
-    final value =
-        this.widget.total > 0 ? this.widget.completed / this.widget.total : 0;
+    final double value = this.widget.total > 0
+        ? (this.widget.completed / this.widget.total)
+        : 0.0;
     if (value != _controller.value) {
       _controller.animateTo(value);
     }

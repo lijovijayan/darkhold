@@ -21,10 +21,9 @@ class FilterProvider with ChangeNotifier {
   String get searchKey => this._searchKey;
   dynamic get filterValue => this._filterValue;
 
-  // value must be either DateTime or int
+  // value must be either DateTime or MCategory
   void changeFilter(TaskFilter __filter, {dynamic value = true}) async {
-    assert((value != null && (value == DateTime || value == int)),
-        'value must be either DateTime or int');
+    if (value == this._filter) return;
     this._filter = __filter;
     this._filterValue = value;
     notifyListeners();

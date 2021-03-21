@@ -40,11 +40,11 @@ class TaskProvider {
         .toList();
   }
 
-  List<MTask> _getTasksByCategory(int categoryId) {
+  List<MTask> _getTasksByCategory(MCategory category) {
     return this
         ._tasks
         .where((t) =>
-            t.categoryId == categoryId &&
+            t.categoryId == category.id &&
             t.name.toLowerCase().startsWith(_searchKey.toLowerCase()))
         .toList();
   }
