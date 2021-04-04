@@ -114,13 +114,9 @@ class _AddButtonState extends State<AddButton> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  void _onClickAddButton(context) async {
+  void _onTapAddButton(context) async {
     _animationController.forward().then((value) {
-      Navigator.push(
-              context,
-              PageTransition(
-                  type: PageTransitionType.bottomToTop, child: AddTaskPage()))
-          .then((dynamic data) {
+      Navigator.pushNamed(context, '/add-task').then((dynamic data) {
         _animationController.reverse();
       });
     });
@@ -133,7 +129,7 @@ class _AddButtonState extends State<AddButton> with TickerProviderStateMixin {
         turns: Tween(begin: 0.0, end: 0.25).animate(_animationController),
         child: Icon(CupertinoIcons.plus),
       ),
-      onPressed: () => _onClickAddButton(context),
+      onPressed: () => _onTapAddButton(context),
     );
   }
 }
@@ -159,6 +155,10 @@ class _AppBarWithSearchState extends State<AppBarWithSearch> {
     setState(() {
       _showSearch = !_showSearch;
     });
+  }
+
+  void _onTapNotifications() async {
+    Navigator.pushNamed(context, '/add-notes');
   }
 
   @override
@@ -231,7 +231,7 @@ class _AppBarWithSearchState extends State<AppBarWithSearch> {
             size: 25,
           ),
           splashRadius: 25,
-          onPressed: () {},
+          onPressed: _onTapNotifications,
         ),
       ],
     );

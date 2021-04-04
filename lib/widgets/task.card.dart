@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'widgets.dart';
+
 class TaskCard extends StatelessWidget {
   final Key key;
   final int id;
@@ -7,7 +9,6 @@ class TaskCard extends StatelessWidget {
   final bool completed;
   final Function(bool) onTap;
   final Color color;
-  final Duration _animationDuration = Duration(milliseconds: 200);
   TaskCard({
     this.key,
     @required this.id,
@@ -29,39 +30,9 @@ class TaskCard extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Container(
-                padding: EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                  color: this.color,
-                  shape: BoxShape.circle,
-                ),
-                child: AnimatedContainer(
-                  duration: _animationDuration,
-                  width: 20,
-                  height: 20,
-                  decoration: BoxDecoration(
-                    color: completed
-                        ? Colors.transparent
-                        : Theme.of(context).cardTheme.color,
-                    shape: BoxShape.circle,
-                  ),
-                  child: AnimatedSwitcher(
-                    duration: _animationDuration,
-                    transitionBuilder:
-                        (Widget widget, Animation<double> animation) {
-                      return ScaleTransition(
-                        scale: animation,
-                        child: widget,
-                      );
-                    },
-                    child: completed
-                        ? Icon(
-                            Icons.check,
-                            size: 20,
-                          )
-                        : SizedBox(),
-                  ),
-                ),
+              AnimatedCheckBox(
+                checked: this.completed,
+                color: this.color,
               ),
               SizedBox(width: 10),
               Expanded(

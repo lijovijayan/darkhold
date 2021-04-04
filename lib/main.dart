@@ -1,3 +1,4 @@
+import 'package:darkhold/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'pages/pages.dart';
@@ -125,12 +126,13 @@ class MyApp extends StatelessWidget {
           foregroundColor: ThemeColors.input),
     );
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
       title: 'Darkhold',
-      themeMode: ThemeMode.light,
+      debugShowCheckedModeBanner: false,
       theme: theme.copyWith(),
       darkTheme: darkTheme,
-      home: HomePage(),
+      themeMode: ThemeMode.light,
+      onGenerateRoute: Routes.generateRoute,
+      initialRoute: 'home-page',
     );
   }
 }
